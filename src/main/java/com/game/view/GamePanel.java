@@ -26,7 +26,7 @@ public class GamePanel extends JPanel implements Runnable {
 	// number of frames with delay of 0 until animation thread yields to other
 	private static final int NO_DELAYS_PER_YIELD = 16;
 	private static final int MAX_FRAME_SKIPS = 5;
-	private static final long FRAMES_PER_SECOND = 85L;
+	private static final long FRAMES_PER_SECOND = 50L;
 	private long period;
 
 	// Statistics values
