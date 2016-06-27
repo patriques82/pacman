@@ -5,7 +5,7 @@ import com.game.view.GameFrame;
 public class Main {
 
 	public static void main(String[] args) {
-		new GameFrame();
+		new GameFrame("Worm Chase");
 	}
 
 }

@@ -22,11 +22,11 @@ public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private final int PHEIGHT;
 	private final int PWIDTH;
+	private final long FRAMES_PER_SECOND;
 
 	// number of frames with delay of 0 until animation thread yields to other
 	private static final int NO_DELAYS_PER_YIELD = 16;
 	private static final int MAX_FRAME_SKIPS = 5;
-	private static final long FRAMES_PER_SECOND = 50L;
 	private long period;
 
 	// Statistics values
@@ -74,12 +74,13 @@ public class GamePanel extends JPanel implements Runnable {
 	private Worm fred;
 	private long gameStartTime;
 	
-	public GamePanel(GameFrame gameFrame, int height, int width) {
+	public GamePanel(GameFrame gameFrame, int fps, int width, int height) {
 		gfTop = gameFrame;
-		PHEIGHT = height;
+		FRAMES_PER_SECOND = fps;
 		PWIDTH = width;
+		PHEIGHT = height;
 		setBackground(Color.WHITE);
-		setPreferredSize(new Dimension(PHEIGHT, PWIDTH));
+		setPreferredSize(new Dimension(PWIDTH, PHEIGHT));
 		
 		// create game components
 		obs = new Obstacles(gfTop);
@@ -241,7 +242,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private void paintScreen() {
 		Graphics g;
 		try {
-			g = this.getGraphics(); // get panels graphic context
+			g = getGraphics(); // get panels graphic context
 			if((g != null) && (dbImage != null))
 				g.drawImage(dbImage, 0, 0, null);
 			Toolkit.getDefaultToolkit().sync(); // sync display on some systems (Linux does not flush display)
@@ -269,7 +270,6 @@ public class GamePanel extends JPanel implements Runnable {
 		dbg.fillRect(0, 0, PWIDTH, PHEIGHT);
 		
 		if(SHOW_STATISTICS_GATHERING) {
-			dbg.setFont(font);
 			dbg.setColor(Color.BLUE);
 			String stat = "Average FPS/UPS: " + df.format(averageFPS) + "/" + df.format(averageUPS);
 			dbg.drawString(stat, 20, 30);
