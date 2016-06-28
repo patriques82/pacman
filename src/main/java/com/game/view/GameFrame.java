@@ -1,7 +1,6 @@
 package com.game.view;
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -11,10 +10,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class GameFrame extends JFrame implements WindowListener {
 	private static final long serialVersionUID = 1L;
@@ -23,15 +19,13 @@ public class GameFrame extends JFrame implements WindowListener {
 	private static int pWidth;
 	private static int pHeight;
 	
-	private JTextField jtfBox;
-	private JTextField jtfTime;
 	private GamePanel gp;
 
 
 	public GameFrame(String name) {
 		super(name);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		makeGUI();
+		
 		pack();
 		setResizable(false);
 		calcSizes();
@@ -53,23 +47,6 @@ public class GameFrame extends JFrame implements WindowListener {
 		setVisible(true);
 	}
 	
-
-	private void makeGUI() {
-		Container c = getContentPane();    // default BorderLayout used
-	    JPanel ctrls = new JPanel();   // a row of textfields
-	    ctrls.setLayout( new BoxLayout(ctrls, BoxLayout.X_AXIS));
-
-	    jtfBox = new JTextField("Boxes used: 0");
-	    jtfBox.setEditable(false);
-	    ctrls.add(jtfBox);
-
-	    jtfTime = new JTextField("Time Spent: 0 secs");
-	    jtfTime.setEditable(false);
-	    ctrls.add(jtfTime);
-
-	    c.add(ctrls, "South");
-	}
-	
 	private void calcSizes() {
 		GraphicsConfiguration gc = this.getGraphicsConfiguration();
 		Rectangle screenRect = gc.getBounds();
@@ -77,23 +54,13 @@ public class GameFrame extends JFrame implements WindowListener {
 
 		Insets desktopInsets = tk.getScreenInsets(gc);
 		Insets frameInsets = getInsets();
-		Dimension tfDim = jtfBox.getPreferredSize();
 
 		pWidth = screenRect.width
 				- (desktopInsets.left + desktopInsets.right)
 				- (frameInsets.left + frameInsets.right);
 		pHeight = screenRect.height
 				- (desktopInsets.top + desktopInsets.bottom)
-				- (frameInsets.top + frameInsets.bottom)
-				- tfDim.height;
-	}
-
-	public void setBoxNumber(int no) {
-		jtfBox.setText("Boxes used: " + no);
-	}
-
-	public void setTimeSpent(long t) {
-		jtfTime.setText("Time spent: " + t + " secs");
+				- (frameInsets.top + frameInsets.bottom);
 	}
 
 	@Override

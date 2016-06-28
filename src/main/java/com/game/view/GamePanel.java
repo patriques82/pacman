@@ -20,9 +20,9 @@ import com.game.components.Worm;
 
 public class GamePanel extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
-	private final int PHEIGHT;
-	private final int PWIDTH;
-	private final long FRAMES_PER_SECOND;
+	private int PHEIGHT;
+	private int PWIDTH;
+	private long FRAMES_PER_SECOND;
 
 	// number of frames with delay of 0 until animation thread yields to other
 	private static final int NO_DELAYS_PER_YIELD = 16;
@@ -73,6 +73,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Obstacles obs;
 	private Worm fred;
 	private long gameStartTime;
+	private int boxesUsed = 0;
 	
 	public GamePanel(GameFrame gameFrame, int fps, int width, int height) {
 		gfTop = gameFrame;
@@ -83,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 		setPreferredSize(new Dimension(PWIDTH, PHEIGHT));
 		
 		// create game components
-		obs = new Obstacles(gfTop);
+		obs = new Obstacles(this);
 		fred = new Worm(PWIDTH, PHEIGHT, obs);
 
 		// add interaction
@@ -138,6 +139,10 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 		});
+	}
+
+	public void setBoxes(int no) {
+		boxesUsed = no;
 	}
 
 	/**
@@ -275,12 +280,14 @@ public class GamePanel extends JPanel implements Runnable {
 			dbg.drawString(stat, 20, 30);
 		}
 
+		dbg.drawString("Time Spent: " + timeSpentInGame + " sec", 10, PHEIGHT-15);
+		dbg.drawString("Boxes Used: " + boxesUsed, 260, PHEIGHT-15);
+
 		dbg.setColor(Color.BLACK);
 
 		// draw elements
 		obs.draw(dbg);
 		fred.draw(dbg);
-
 
 		if(gameOver) {
 			gameOverMessage(dbg);
@@ -310,7 +317,6 @@ public class GamePanel extends JPanel implements Runnable {
 		if(statsInterval >= MAX_STATS_INTERVAL) {
 			long timeNow = System.nanoTime();
 			timeSpentInGame = (int) ((timeNow - gameStartTime)/1000_000_000L); // seconds
-			gfTop.setTimeSpent(timeSpentInGame);
 
 			long realElapsedTime = timeNow - prevStatsTime; // time since last collection
 			totalElapsedTime += realElapsedTime;
@@ -367,5 +373,6 @@ public class GamePanel extends JPanel implements Runnable {
 		System.out.println("Average UPS: " + df.format(averageUPS));
 		System.out.println("Time Spent: " + timeSpentInGame + " sec");
 	}
+
 
 }
