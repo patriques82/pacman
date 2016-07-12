@@ -6,11 +6,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.text.DecimalFormat;
 
 import javax.swing.JPanel;
@@ -58,12 +60,16 @@ public class GamePanel extends JPanel implements Runnable {
 	private volatile boolean running = false;
 	private volatile boolean paused = false;
 	private volatile boolean gameOver = false;
+	private boolean finishedOff = false;
+	private boolean isOverPauseBtn = false;
+	private boolean isOverQuitBtn = false;
 	private int score = 0;
 	
 	// graphics
 	private Graphics dbg;
 	private Image dbImage = null;
-	private GameFrame gfTop;
+	private GameFrame1 gfTop;
+	private Rectangle pauseArea, quitArea;
 
 	// message font
 	private Font font;
@@ -75,23 +81,32 @@ public class GamePanel extends JPanel implements Runnable {
 	private long gameStartTime;
 	private int boxesUsed = 0;
 	
-	public GamePanel(GameFrame gameFrame, int fps, int width, int height) {
+	public GamePanel(GameFrame1 gameFrame, int fps) {
 		gfTop = gameFrame;
 		FRAMES_PER_SECOND = fps;
-		PWIDTH = width;
-		PHEIGHT = height;
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		Dimension screenDim = tk.getScreenSize();
+		PWIDTH = screenDim.width;
+		PHEIGHT = screenDim.height;
 		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(PWIDTH, PHEIGHT));
 		
 		// create game components
 		obs = new Obstacles(this);
 		fred = new Worm(PWIDTH, PHEIGHT, obs);
+		pauseArea = new Rectangle(PWIDTH-100, PHEIGHT-45, 70, 15);
+		quitArea = new Rectangle(PWIDTH-200, PHEIGHT-45, 70, 15);
 
 		// add interaction
 		setFocusable(true);
 		requestFocus();
 		readyForTermination();
-		addMouseListener(new MouseAdapter() {
+		addMouseMotionListener(new MouseMotionAdapter() { // handle hover over buttons
+			public void mouseMoved(MouseEvent e) {
+				testMove(e.getX(), e.getY());
+			}
+		});
+		addMouseListener(new MouseAdapter() { // handle mouse clicks
 			public void mousePressed(MouseEvent e) {
 				testPress(e.getX(), e.getY());
 			}
@@ -108,17 +123,34 @@ public class GamePanel extends JPanel implements Runnable {
 			fpsStore[i] = 0.0;
 			upsStore[i] = 0.0;
 		}
+		startGame();
+	}
+
+	// is mouse over pause or quit
+	private void testMove(int x, int y) {
+		if(running) {
+			isOverPauseBtn = pauseArea.contains(x,y);
+			isOverQuitBtn = quitArea.contains(x,y);
+		}
 	}
 
 	private void testPress(int x, int y) {
-		if(!paused && !gameOver) {
-			if(fred.nearHead(x,y)) {
-				gameOver = true;
-				score = (40 - timeSpentInGame) + 40 - obs.getNumObstacles();
-			}
-			else {
-				if(!fred.touchedAt(x,y)) {
-					obs.add(x,y);
+		if(isOverPauseBtn) {
+			paused = !paused; // toggle
+		}
+		else if(isOverQuitBtn) {
+			running = false;
+		}
+		else {
+			if(!paused && !gameOver) {
+				if(fred.nearHead(x,y)) {
+					gameOver = true;
+					score = (40 - timeSpentInGame) + 40 - obs.getNumObstacles();
+				}
+				else {
+					if(!fred.touchedAt(x,y)) {
+						obs.add(x,y);
+					}
 				}
 			}
 		}
@@ -143,14 +175,6 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void setBoxes(int no) {
 		boxesUsed = no;
-	}
-
-	/**
-	 * Wait for GamePanel to be added to Parent (JFrame) before starting game loop
-	 */
-	public void addNotify() {
-		super.addNotify();
-		startGame();
 	}
 
 	/**
@@ -182,8 +206,17 @@ public class GamePanel extends JPanel implements Runnable {
 	 */
 	public void stopGame() {
 		running = false;
+		finish(); 
 	}
 	
+	private void finish() {
+		if(!finishedOff) {
+			finishedOff = true;
+			printStats();
+			System.exit(0);
+		}
+	}
+
 	/**
 	 * Game loop
 	 */
@@ -197,14 +230,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 		gameStartTime = System.nanoTime();
 		prevStatsTime = gameStartTime;
-		beforeTime = gameStartTime;
+		beforeTime = gameStartTime; // before game loop
 
 		running = true;
 		while(running) {
 			gameUpdate();
 			gameRender();
 			paintScreen();
-			afterTime = System.nanoTime();
+			afterTime = System.nanoTime(); // after loop
 
 			timeDiff = afterTime - beforeTime;
 			sleepTime = (period - timeDiff) - overSleepTime; // over sleep adjustment from before  
@@ -240,7 +273,6 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 	
 
-
 	/**
 	 * Actively render the buffer image to screen
 	 */
@@ -261,6 +293,7 @@ public class GamePanel extends JPanel implements Runnable {
 	 * Double buffering
 	 */
 	private void gameRender() {
+		// create buffer
 		if(dbImage == null) {
 			dbImage = createImage(PWIDTH, PHEIGHT);
 			if(dbImage == null) {
@@ -274,18 +307,22 @@ public class GamePanel extends JPanel implements Runnable {
 		dbg.setColor(Color.WHITE);
 		dbg.fillRect(0, 0, PWIDTH, PHEIGHT);
 		
+		// report FPS and UPS if asked for at top left
 		if(SHOW_STATISTICS_GATHERING) {
 			dbg.setColor(Color.BLUE);
 			String stat = "Average FPS/UPS: " + df.format(averageFPS) + "/" + df.format(averageUPS);
 			dbg.drawString(stat, 20, 30);
 		}
 
+		// report time used and boxes used at bottom left
 		dbg.drawString("Time Spent: " + timeSpentInGame + " sec", 10, PHEIGHT-15);
 		dbg.drawString("Boxes Used: " + boxesUsed, 260, PHEIGHT-15);
-
-		dbg.setColor(Color.BLACK);
+		
+		// draw control buttons
+		drawButtons(dbg);
 
 		// draw elements
+		dbg.setColor(Color.BLACK);
 		obs.draw(dbg);
 		fred.draw(dbg);
 
@@ -294,6 +331,24 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 	}
 
+	private void drawButtons(Graphics g) {
+		g.setColor(Color.BLACK);
+		if(isOverPauseBtn)
+			g.setColor(Color.ORANGE);
+		g.drawOval(pauseArea.x, pauseArea.y, pauseArea.width, pauseArea.height);
+		if(paused)
+			g.drawString("Paused", pauseArea.x+5, pauseArea.y+10);
+		else
+			g.drawString("Pause", pauseArea.x+5, pauseArea.y+10);
+		if(isOverPauseBtn)
+			g.setColor(Color.BLACK);
+		if(isOverQuitBtn)
+			g.setColor(Color.GREEN);
+		g.drawOval(quitArea.x, quitArea.y, quitArea.width, quitArea.height);
+		g.drawString("Quit", quitArea.x+15, quitArea.y+10);
+		if(isOverQuitBtn)
+			g.setColor(Color.BLACK);
+	}
 
 	private void gameOverMessage(Graphics g) {
 		String msg = "Game Over";

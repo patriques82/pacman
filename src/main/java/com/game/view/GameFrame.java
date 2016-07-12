@@ -1,97 +1,433 @@
 package com.game.view;
 
-import java.awt.Container;
-import java.awt.GraphicsConfiguration;
-import java.awt.Insets;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.text.DecimalFormat;
 
 import javax.swing.JFrame;
 
-public class GameFrame extends JFrame implements WindowListener {
+import com.game.components.Obstacles;
+import com.game.components.Worm;
+
+public class GameFrame extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
-	private static final int FPS = 50;
+	private static final int FPS = 40; // frames per second
 
-	private static int pWidth;
-	private static int pHeight;
+	private int PHEIGHT;
+	private int PWIDTH;
+	private long FRAMES_PER_SECOND;
+
+	// number of frames with delay of 0 until animation thread yields to other
+	private static final int NO_DELAYS_PER_YIELD = 16;
+	private static final int MAX_FRAME_SKIPS = 5;
+	private long period;
+
+	// Statistics values
+	private static final boolean SHOW_STATISTICS_GATHERING = true; // decide if you want print out statistics
+	private static long MAX_STATS_INTERVAL = 1000_000_000L; // record statistics every second
+	private long statsInterval = 0L;
+	private long prevStatsTime;
+	private long totalElapsedTime = 0L;
+	private long statsCount = 0;
+
+	private static int NUM_FPS = 10; // number of FPS stored to get average
+	private long frameCount = 0;
+	private double averageFPS = 0.0;
+	private double[] fpsStore;
+
+	private long framesSkipped = 0L;
+	private long totalFramesSkipped = 0L;
+	private double averageUPS = 0.0;
+	private double[] upsStore;
+
+	private int timeSpentInGame = 0;
+	private DecimalFormat df = new DecimalFormat("0.##");
+	private DecimalFormat timedf = new DecimalFormat("0.####");
 	
-	private GamePanel gp;
+	// animator thread
+	private Thread animator = null;
 
+	// game controls
+	private volatile boolean running = false;
+	private volatile boolean paused = false;
+	private volatile boolean gameOver = false;
+	private boolean finishedOff = false;
+	private boolean isOverPauseBtn = false;
+	private boolean isOverQuitBtn = false;
+	private int score = 0;
+	
+	// graphics
+	private Graphics dbg;
+	private Image dbImage;
+//	private GameFrame gfTop;
+	private Rectangle pauseArea, quitArea;
+
+	// message font
+	private Font font;
+	private FontMetrics metrics;
+	
+	// game components
+	private Obstacles obs;
+	private Worm fred;
+	private long gameStartTime;
+	private int boxesUsed = 0;
 
 	public GameFrame(String name) {
 		super(name);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		initFullScreen();
 		
-		pack();
-		setResizable(false);
-		calcSizes();
-		setResizable(true);
-		
-		Container c = getContentPane();
-		gp = new GamePanel(this, FPS, pWidth, pHeight);
-		c.add(gp);
-		pack();
-		
-		addWindowListener(this);
-		addComponentListener(new ComponentAdapter() { // make screen jump back when moved from position.:w
-			public void componentMoved(ComponentEvent e) {
-				setLocation(0,0);
+		// create game components
+//		obs = new Obstacles(this);
+		fred = new Worm(PWIDTH, PHEIGHT, obs);
+		pauseArea = new Rectangle(PWIDTH-100, PHEIGHT-45, 70, 15);
+		quitArea = new Rectangle(PWIDTH-200, PHEIGHT-45, 70, 15);
+
+		// add interaction
+		setFocusable(true);
+		requestFocus();
+		readyForTermination();
+		addMouseMotionListener(new MouseMotionAdapter() { // handle hover over buttons
+			public void mouseMoved(MouseEvent e) {
+				testMove(e.getX(), e.getY());
 			}
 		});
+		addMouseListener(new MouseAdapter() { // handle mouse clicks
+			public void mousePressed(MouseEvent e) {
+				testPress(e.getX(), e.getY());
+			}
+		});
+		
+		// set up message font
+		font = new Font("SansSerif", Font.BOLD, 24);
+		metrics = getFontMetrics(font);
+		
+		// initialize timing elements
+		fpsStore = new double[NUM_FPS];
+		upsStore = new double[NUM_FPS];
+		for(int i=0; i<NUM_FPS; i++) {
+			fpsStore[i] = 0.0;
+			upsStore[i] = 0.0;
+		}
+		startGame();
+		
+	}
 
-		setResizable(false);
-		setVisible(true);
+	private void initFullScreen() {
+		// TODO Auto-generated method stub
+		
 	}
 	
-	private void calcSizes() {
-		GraphicsConfiguration gc = this.getGraphicsConfiguration();
-		Rectangle screenRect = gc.getBounds();
-		Toolkit tk = Toolkit.getDefaultToolkit();
-
-		Insets desktopInsets = tk.getScreenInsets(gc);
-		Insets frameInsets = getInsets();
-
-		pWidth = screenRect.width
-				- (desktopInsets.left + desktopInsets.right)
-				- (frameInsets.left + frameInsets.right);
-		pHeight = screenRect.height
-				- (desktopInsets.top + desktopInsets.bottom)
-				- (frameInsets.top + frameInsets.bottom);
+	// is mouse over pause or quit
+	private void testMove(int x, int y) {
+		if(running) {
+			isOverPauseBtn = pauseArea.contains(x,y);
+			isOverQuitBtn = quitArea.contains(x,y);
+		}
 	}
 
-	@Override
-	public void windowOpened(WindowEvent e) {}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		gp.stopGame();
+	private void testPress(int x, int y) {
+		if(isOverPauseBtn) {
+			paused = !paused; // toggle
+		}
+		else if(isOverQuitBtn) {
+			running = false;
+		}
+		else {
+			if(!paused && !gameOver) {
+				if(fred.nearHead(x,y)) {
+					gameOver = true;
+					score = (40 - timeSpentInGame) + 40 - obs.getNumObstacles();
+				}
+				else {
+					if(!fred.touchedAt(x,y)) {
+						obs.add(x,y);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * User quits by keyboard
+	 */
+	private void readyForTermination() {
+		addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int keyCode = e.getKeyCode();
+				if((keyCode == KeyEvent.VK_ESCAPE) ||
+				   (keyCode == KeyEvent.VK_Q) ||
+				   (keyCode == KeyEvent.VK_END) ||
+				   (keyCode == KeyEvent.VK_C) && e.isControlDown() ) {
+					running = false;
+				}
+			}
+		});
 	}
 
-	@Override
-	public void windowClosed(WindowEvent e) {}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		gp.pauseGame();
+	public void setBoxes(int no) {
+		boxesUsed = no;
 	}
 
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		gp.resumeGame();
+	/**
+	 * Initializes and starts the animator thread
+	 */
+	private void startGame() {
+		if(animator == null || !running) {
+			animator = new Thread(this);
+			animator.start();
+		}
 	}
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-		gp.resumeGame();
+	/**
+	 * Tells gameUpdate method that game state does not need to be updated
+	 */
+	public void pauseGame() {
+		paused = true;
+	}
+	
+	/**
+	 * Resumes game from paused state
+	 */
+	public void resumeGame() {
+		paused = false;
+	}
+	
+	/**
+	 * Stops the animator thread by setting running flag to false
+	 */
+	public void stopGame() {
+		running = false;
+		finish(); 
+	}
+	
+	private void finish() {
+		if(!finishedOff) {
+			finishedOff = true;
+			printStats();
+			System.exit(0);
+		}
 	}
 
+	/**
+	 * Game loop
+	 */
 	@Override
-	public void windowDeactivated(WindowEvent e) {
-		gp.pauseGame();
+	public void run() {
+		long beforeTime, afterTime, timeDiff, sleepTime; // measures for calculating sleep time
+		period = 1000_000_000L/FRAMES_PER_SECOND; // nanoseconds
+		long overSleepTime = 0L;
+		long excess = 0L;
+		int noDelays = 0;
+
+		gameStartTime = System.nanoTime();
+		prevStatsTime = gameStartTime;
+		beforeTime = gameStartTime; // before game loop
+
+		running = true;
+		while(running) {
+			gameUpdate();
+			gameRender();
+			paintScreen();
+			afterTime = System.nanoTime(); // after loop
+
+			timeDiff = afterTime - beforeTime;
+			sleepTime = (period - timeDiff) - overSleepTime; // over sleep adjustment from before  
+
+			if(sleepTime > 0) { // time left in cycle
+				try {
+					Thread.sleep(sleepTime/1000_000L);
+				} catch(InterruptedException e) {}
+				overSleepTime = (System.nanoTime() - afterTime) - sleepTime; // ideally 0
+			}
+			else { // frame took longer than the period (<= 0), no sleep
+				overSleepTime = 0L;
+				if(++noDelays >= NO_DELAYS_PER_YIELD) { // yield if it happened often
+					Thread.yield();
+					noDelays = 0;
+				}
+				excess -= sleepTime; // sleepTime < 0 so to calculate excess store negative value
+			}
+
+			beforeTime = System.nanoTime();
+
+			int skips = 0;
+			while((excess > period) && (skips < MAX_FRAME_SKIPS)) { // update state without rendering
+				excess -= period;
+				gameUpdate();
+				skips++;
+			}
+			framesSkipped += skips;
+			storeStats();
+		}
+		printStats();
+		System.exit(0);
+	}
+	
+
+	/**
+	 * Actively render the buffer image to screen
+	 */
+	private void paintScreen() {
+		Graphics g;
+		try {
+			g = getGraphics(); // get graphic context
+			if((g != null) && (dbImage != null))
+				g.drawImage(dbImage, 0, 0, null);
+			Toolkit.getDefaultToolkit().sync(); // sync display on some systems (Linux does not flush display)
+			g.dispose();
+		} catch(Exception e) {
+			System.out.println("Graphics context error: " + e);
+		}
+	}
+
+	/**
+	 * Double buffering
+	 */
+	private void gameRender() {
+		// create buffer
+		if(dbImage == null) {
+			dbImage = createImage(PWIDTH, PHEIGHT);
+			if(dbImage == null) {
+				System.out.println("dbImage == null");
+				return;
+			}
+			else {
+				dbg = dbImage.getGraphics();
+			}
+		}
+		dbg.setColor(Color.WHITE);
+		dbg.fillRect(0, 0, PWIDTH, PHEIGHT);
+		
+		// report FPS and UPS if asked for at top left
+		if(SHOW_STATISTICS_GATHERING) {
+			dbg.setColor(Color.BLUE);
+			String stat = "Average FPS/UPS: " + df.format(averageFPS) + "/" + df.format(averageUPS);
+			dbg.drawString(stat, 20, 30);
+		}
+
+		// report time used and boxes used at bottom left
+		dbg.drawString("Time Spent: " + timeSpentInGame + " sec", 10, PHEIGHT-15);
+		dbg.drawString("Boxes Used: " + boxesUsed, 260, PHEIGHT-15);
+		
+		// draw control buttons
+		drawButtons(dbg);
+
+		// draw elements
+		dbg.setColor(Color.BLACK);
+		obs.draw(dbg);
+		fred.draw(dbg);
+
+		if(gameOver) {
+			gameOverMessage(dbg);
+		}
+	}
+
+	private void drawButtons(Graphics g) {
+		g.setColor(Color.BLACK);
+		if(isOverPauseBtn)
+			g.setColor(Color.ORANGE);
+		g.drawOval(pauseArea.x, pauseArea.y, pauseArea.width, pauseArea.height);
+		if(paused)
+			g.drawString("Paused", pauseArea.x+5, pauseArea.y+10);
+		else
+			g.drawString("Pause", pauseArea.x+5, pauseArea.y+10);
+		if(isOverPauseBtn)
+			g.setColor(Color.BLACK);
+		if(isOverQuitBtn)
+			g.setColor(Color.GREEN);
+		g.drawOval(quitArea.x, quitArea.y, quitArea.width, quitArea.height);
+		g.drawString("Quit", quitArea.x+15, quitArea.y+10);
+		if(isOverQuitBtn)
+			g.setColor(Color.BLACK);
+	}
+
+	private void gameOverMessage(Graphics g) {
+		String msg = "Game Over";
+		int x = 0;
+		int y = 0;
+		g.drawString(msg, x, y);
+	}
+
+	private void gameUpdate() {
+		if(!gameOver && !paused) {
+			fred.move();
+		}
+	}
+	
+	///// Statistics 
+	
+	private void storeStats() {
+		frameCount++; // storeStats is called after one frame
+		statsInterval += period; // (ms -> ns) accumulate until threshold
+		
+		if(statsInterval >= MAX_STATS_INTERVAL) {
+			long timeNow = System.nanoTime();
+			timeSpentInGame = (int) ((timeNow - gameStartTime)/1000_000_000L); // seconds
+
+			long realElapsedTime = timeNow - prevStatsTime; // time since last collection
+			totalElapsedTime += realElapsedTime;
+			double timingError = ((double) (realElapsedTime - statsInterval) / statsInterval) * 100.0;
+			totalFramesSkipped += framesSkipped;
+
+			double actualFPS = 0;
+			double actualUPS = 0;
+			if(totalElapsedTime > 0) {
+				actualFPS = ((double) frameCount / totalElapsedTime) * 1000_000_000L;
+				actualUPS = (((double) frameCount+totalFramesSkipped) / totalElapsedTime) * 1000_000_000L;
+			}
+			
+			fpsStore[(int) statsCount % NUM_FPS] = actualFPS;
+			upsStore[(int) statsCount % NUM_FPS] = actualUPS;
+			statsCount++;
+			
+			double totalFPS = 0.0;
+			double totalUPS = 0.0;
+			for(int i=0; i < NUM_FPS; i++) {
+				totalFPS += fpsStore[i];
+				totalUPS += upsStore[i];
+			}
+			
+			if(statsCount < NUM_FPS) {
+				averageFPS = totalFPS/statsCount;
+				averageUPS = totalUPS/statsCount;
+			}
+			else {
+				averageFPS = totalFPS/NUM_FPS;
+				averageUPS = totalUPS/NUM_FPS;
+			}
+			
+			if(SHOW_STATISTICS_GATHERING) {
+				System.out.println(
+					timedf.format((double) statsInterval/1000_000_000L) + " " + 		// time since last output
+					timedf.format((double) realElapsedTime/1000_000_000L) + "s " +		// real time since last
+					df.format(timingError) + "% " +										// percentage error
+					frameCount + "c " +
+					framesSkipped + "/" + totalFramesSkipped + " skip; " +
+					df.format(actualFPS) + " " + df.format(averageFPS) + " afps; " +
+					df.format(actualUPS) + " " + df.format(averageUPS) + " aups");
+			}
+
+			framesSkipped = 0;
+			prevStatsTime = timeNow;
+			statsInterval = 0L;  // reset
+		}
+	}
+	
+	private void printStats() {
+		System.out.println("Frame Count/Loss: " + frameCount + " / " + totalFramesSkipped);
+		System.out.println("Average FPS: " + df.format(averageFPS));
+		System.out.println("Average UPS: " + df.format(averageUPS));
+		System.out.println("Time Spent: " + timeSpentInGame + " sec");
 	}
 
 }
