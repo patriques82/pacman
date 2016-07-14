@@ -1,36 +1,71 @@
 package com.game.view;
 
 import java.awt.Color;
+import java.awt.DisplayMode;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferStrategy;
 import java.text.DecimalFormat;
-
 import javax.swing.JFrame;
 
 import com.game.components.Obstacles;
 import com.game.components.Worm;
 
+// Full-Screen Exclusive Mode (FSEM)
 public class GameFrame extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
-	private static final int FPS = 40; // frames per second
-
+	private static final int FPS = 60; // frames per second
 	private int PHEIGHT;
 	private int PWIDTH;
-	private long FRAMES_PER_SECOND;
 
 	// number of frames with delay of 0 until animation thread yields to other
 	private static final int NO_DELAYS_PER_YIELD = 16;
 	private static final int MAX_FRAME_SKIPS = 5;
 	private long period;
+	private int timeSpentInGame = 0;
+	
+	// animator thread
+	private Thread animator = null;
+
+	// game controls
+	private volatile boolean running = false;
+	private volatile boolean paused = false;
+	private volatile boolean gameOver = false;
+	private boolean finishedOff = false;
+	private boolean isOverPauseBtn = false;
+	private boolean isOverQuitBtn = false;
+	private int score = 0;
+	
+	// graphics
+	private GraphicsDevice gd; // graphics card
+	private Graphics gScr;
+	protected static final int NUM_BUFFERS = 2;
+	private BufferStrategy bufferStrategy;
+
+	// static views on screen
+	private Font font;
+	private FontMetrics metrics;
+	private Rectangle pauseArea, quitArea;
+	private DecimalFormat df = new DecimalFormat("0.##");
+	private DecimalFormat timedf = new DecimalFormat("0.####");
+	
+	// game components
+	private Obstacles obs;
+	private Worm fred;
+	private long gameStartTime;
+	private int boxesUsed = 0;
 
 	// Statistics values
 	private static final boolean SHOW_STATISTICS_GATHERING = true; // decide if you want print out statistics
@@ -50,44 +85,12 @@ public class GameFrame extends JFrame implements Runnable {
 	private double averageUPS = 0.0;
 	private double[] upsStore;
 
-	private int timeSpentInGame = 0;
-	private DecimalFormat df = new DecimalFormat("0.##");
-	private DecimalFormat timedf = new DecimalFormat("0.####");
-	
-	// animator thread
-	private Thread animator = null;
-
-	// game controls
-	private volatile boolean running = false;
-	private volatile boolean paused = false;
-	private volatile boolean gameOver = false;
-	private boolean finishedOff = false;
-	private boolean isOverPauseBtn = false;
-	private boolean isOverQuitBtn = false;
-	private int score = 0;
-	
-	// graphics
-	private Graphics dbg;
-	private Image dbImage;
-//	private GameFrame gfTop;
-	private Rectangle pauseArea, quitArea;
-
-	// message font
-	private Font font;
-	private FontMetrics metrics;
-	
-	// game components
-	private Obstacles obs;
-	private Worm fred;
-	private long gameStartTime;
-	private int boxesUsed = 0;
-
 	public GameFrame(String name) {
 		super(name);
 		initFullScreen();
 		
 		// create game components
-//		obs = new Obstacles(this);
+		obs = new Obstacles(this);
 		fred = new Worm(PWIDTH, PHEIGHT, obs);
 		pauseArea = new Rectangle(PWIDTH-100, PHEIGHT-45, 70, 15);
 		quitArea = new Rectangle(PWIDTH-200, PHEIGHT-45, 70, 15);
@@ -123,10 +126,62 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 
 	private void initFullScreen() {
-		// TODO Auto-generated method stub
-		
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		gd = ge.getDefaultScreenDevice(); // graphics card
+		setUndecorated(true); // no menu bar, border etc
+		setIgnoreRepaint(true); // turn of paint events, active rendering
+		setResizable(false);
+		if(!gd.isFullScreenSupported()) {
+			// TODO: turn on AFS
+			System.out.println("Full-screen exclusive mode not supported.");
+			System.exit(0);
+		}
+		gd.setFullScreenWindow(this); // turn on FSEM
+		showCurrentMode();
+		// setDisplayMode(800, 600, 8); // 8 bits
+		PWIDTH = getBounds().width;
+		PHEIGHT = getBounds().height;
+		setBufferStrategy();
 	}
 	
+	/**
+	 *  Strategy for updating screen. Creates a new strategy for multi-buffering on this component.
+	 *  Multi-buffering is useful for rendering performance. This method attempts to create the
+	 *  best strategy available with the number of buffers supplied. It will always create a
+	 *  BufferStrategy with that number of buffers. A page-flipping strategy is attempted first,
+	 *  then a blitting strategy using accelerated buffers. Finally, an unaccelerated blitting
+	 *  strategy is used.
+	 */
+	private void setBufferStrategy() {
+		try {
+			// used for preventing deadlock between createBufferStrategy and event dispatcher
+			EventQueue.invokeAndWait(new Runnable() {
+				public void run() {
+					createBufferStrategy(NUM_BUFFERS);
+				}
+			});
+		}
+		catch(Exception e) {
+			System.out.println("Error creating buffer strategy");
+			System.exit(0);
+		}
+		try {
+			Thread.sleep(500); // give time to buffer strategy to be done
+		}
+		catch(InterruptedException e) {}
+		bufferStrategy = getBufferStrategy();
+	}
+
+	/**
+	 * Display mode details for the graphics card
+	 * (width, height (pixels), bitdepth (bits/pixel), refresh rate)
+	 */
+	private void showCurrentMode() {
+		DisplayMode dm = gd.getDisplayMode();
+		System.out.println("Current display mode: (" + dm.getWidth() + ", " + dm.getHeight() + 
+						   ", " + dm.getBitDepth() + ", " + dm.getRefreshRate() + ") ");
+	}
+
 	// is mouse over pause or quit
 	private void testMove(int x, int y) {
 		if(running) {
@@ -214,8 +269,17 @@ public class GameFrame extends JFrame implements Runnable {
 		if(!finishedOff) {
 			finishedOff = true;
 			printStats();
+			restoreScreen();
 			System.exit(0);
 		}
+	}
+	
+	private void restoreScreen() {
+		Window w = gd.getFullScreenWindow();
+		if(w != null) {
+			w.dispose();
+		}
+		gd.setFullScreenWindow(null);
 	}
 
 	/**
@@ -224,7 +288,7 @@ public class GameFrame extends JFrame implements Runnable {
 	@Override
 	public void run() {
 		long beforeTime, afterTime, timeDiff, sleepTime; // measures for calculating sleep time
-		period = 1000_000_000L/FRAMES_PER_SECOND; // nanoseconds
+		period = 1000_000_000L/FPS; // nanoseconds
 		long overSleepTime = 0L;
 		long excess = 0L;
 		int noDelays = 0;
@@ -236,13 +300,12 @@ public class GameFrame extends JFrame implements Runnable {
 		running = true;
 		while(running) {
 			gameUpdate();
-			gameRender();
-			paintScreen();
-			afterTime = System.nanoTime(); // after loop
+			screenUpdate(); // render one buffer
 
+			// Statistics 
+			afterTime = System.nanoTime(); // after loop
 			timeDiff = afterTime - beforeTime;
 			sleepTime = (period - timeDiff) - overSleepTime; // over sleep adjustment from before  
-
 			if(sleepTime > 0) { // time left in cycle
 				try {
 					Thread.sleep(sleepTime/1000_000L);
@@ -257,7 +320,6 @@ public class GameFrame extends JFrame implements Runnable {
 				}
 				excess -= sleepTime; // sleepTime < 0 so to calculate excess store negative value
 			}
-
 			beforeTime = System.nanoTime();
 
 			int skips = 0;
@@ -274,61 +336,57 @@ public class GameFrame extends JFrame implements Runnable {
 	}
 	
 
-	/**
-	 * Actively render the buffer image to screen
-	 */
-	private void paintScreen() {
-		Graphics g;
+	private void screenUpdate() {
 		try {
-			g = getGraphics(); // get graphic context
-			if((g != null) && (dbImage != null))
-				g.drawImage(dbImage, 0, 0, null);
-			Toolkit.getDefaultToolkit().sync(); // sync display on some systems (Linux does not flush display)
-			g.dispose();
-		} catch(Exception e) {
-			System.out.println("Graphics context error: " + e);
+			gScr = bufferStrategy.getDrawGraphics();
+			gameRender(gScr);
+			gScr.dispose();
+			if(!bufferStrategy.contentsLost()) {
+				bufferStrategy.show();
+			}
+			else {
+				System.out.println("Contents lost");
+			}
+			Toolkit.getDefaultToolkit().sync();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			running = false;
 		}
 	}
 
+
 	/**
 	 * Double buffering
+	 * @param gScr 
 	 */
-	private void gameRender() {
-		// create buffer
-		if(dbImage == null) {
-			dbImage = createImage(PWIDTH, PHEIGHT);
-			if(dbImage == null) {
-				System.out.println("dbImage == null");
-				return;
-			}
-			else {
-				dbg = dbImage.getGraphics();
-			}
-		}
-		dbg.setColor(Color.WHITE);
-		dbg.fillRect(0, 0, PWIDTH, PHEIGHT);
+	private void gameRender(Graphics gSrc) {
+		gSrc.setColor(Color.WHITE);
+		gSrc.fillRect(0, 0, PWIDTH, PHEIGHT);
+		gSrc.setColor(Color.BLUE);
+		gSrc.setFont(font);
 		
 		// report FPS and UPS if asked for at top left
 		if(SHOW_STATISTICS_GATHERING) {
-			dbg.setColor(Color.BLUE);
+			gSrc.setColor(Color.BLUE);
 			String stat = "Average FPS/UPS: " + df.format(averageFPS) + "/" + df.format(averageUPS);
-			dbg.drawString(stat, 20, 30);
+			gSrc.drawString(stat, 20, 30);
 		}
 
 		// report time used and boxes used at bottom left
-		dbg.drawString("Time Spent: " + timeSpentInGame + " sec", 10, PHEIGHT-15);
-		dbg.drawString("Boxes Used: " + boxesUsed, 260, PHEIGHT-15);
+		gSrc.drawString("Time Spent: " + timeSpentInGame + " sec", 10, PHEIGHT-15);
+		gSrc.drawString("Boxes Used: " + boxesUsed, 260, PHEIGHT-15);
 		
 		// draw control buttons
-		drawButtons(dbg);
+		drawButtons(gSrc);
 
 		// draw elements
-		dbg.setColor(Color.BLACK);
-		obs.draw(dbg);
-		fred.draw(dbg);
+		gSrc.setColor(Color.BLACK);
+		obs.draw(gSrc);
+		fred.draw(gSrc);
 
 		if(gameOver) {
-			gameOverMessage(dbg);
+			gameOverMessage(gSrc);
 		}
 	}
 

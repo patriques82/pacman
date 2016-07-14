@@ -7,19 +7,18 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.game.view.GamePanel;
+import com.game.view.GameFrame;
 
 
 public class Obstacles {
 	
-	private GamePanel gpTop;
+	private GameFrame gfTop;
 	private static final int BOX_LENGTH = 3;
 	private List<Rectangle> boxes;
 
-
-	public Obstacles(GamePanel gp) {
+	public Obstacles(GameFrame gf) {
 		boxes = new ArrayList<>();
-		gpTop = gp;
+		gfTop = gf;
 	}
 
 	public int getNumObstacles() {
@@ -28,7 +27,7 @@ public class Obstacles {
 
 	synchronized public void add(int x, int y) {
 		boxes.add(new Rectangle(x, y, BOX_LENGTH, BOX_LENGTH));
-		gpTop.setBoxes(boxes.size());
+		gfTop.setBoxes(boxes.size());
 	}
 
 	synchronized public void draw(Graphics dbg) {
