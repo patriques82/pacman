@@ -171,6 +171,42 @@ public class GameFrame extends JFrame implements Runnable {
 		catch(InterruptedException e) {}
 		bufferStrategy = getBufferStrategy();
 	}
+	
+	private void setDisplayMode(int width, int height, int bitDepth) {
+		if(!gd.isDisplayChangeSupported()) {
+			System.out.println("Display mode changing not supported");
+			return;
+		}
+		if(!isDisplayModeAvailable(width, height, bitDepth)) {
+			System.out.println("Display mode (" + width + ", " + height + ", " + bitDepth + ") " +
+							   "not available");
+			return;
+		}
+		DisplayMode dm = new DisplayMode(width, height, bitDepth, DisplayMode.REFRESH_RATE_UNKNOWN);
+		try {
+			gd.setDisplayMode(dm);
+			System.out.println("Display mode set to: (" + width + ", " + height + ", " + bitDepth + ") ");
+		}
+		catch(IllegalArgumentException e) {
+			System.out.println("Error setting display mode to: (" + width + ", " + height + ", " + bitDepth + ") ");
+		}
+		try { // sleep to give time for the display to be changed
+			Thread.sleep(1000); 
+		}
+		catch(InterruptedException e) {}
+	}
+
+	private boolean isDisplayModeAvailable(int width, int height, int bitDepth) {
+		DisplayMode[] modes = gd.getDisplayModes();
+		for(int i=0; i<modes.length; i++) {
+			if(width == modes[i].getWidth() && 
+			   height == modes[i].getHeight() &&
+			   bitDepth == modes[i].getBitDepth()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Display mode details for the graphics card
