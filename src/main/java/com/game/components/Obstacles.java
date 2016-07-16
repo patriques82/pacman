@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.game.view.GameFrame;
+import com.game.main.GameFrame;
 
 
 public class Obstacles {
@@ -27,7 +27,6 @@ public class Obstacles {
 
 	synchronized public void add(int x, int y) {
 		boxes.add(new Rectangle(x, y, BOX_LENGTH, BOX_LENGTH));
-		gfTop.setBoxes(boxes.size());
 	}
 
 	synchronized public void draw(Graphics dbg) {
