@@ -1,4 +1,4 @@
-package com.game.pacman;
+package com.game.pacman.states;
 
 import java.awt.Graphics;
 

@@ -5,14 +5,10 @@ import java.awt.event.KeyListener;
 
 public class KeyManager implements KeyListener {
 	
-	private boolean[] keys;
+	private static boolean[] keys = new boolean[256];
 	private static boolean UP, DOWN, LEFT, RIGHT;
 	
-	public KeyManager() {
-		keys = new boolean[256];
-	}
-	
-	public void tick() {
+	public static void tick() {
 		UP = keys[KeyEvent.VK_UP];
 		DOWN = keys[KeyEvent.VK_DOWN];
 		LEFT = keys[KeyEvent.VK_LEFT];
@@ -26,7 +22,6 @@ public class KeyManager implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		keys[e.getKeyCode()] = true;
 	}
 

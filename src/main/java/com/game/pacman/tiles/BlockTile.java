@@ -2,15 +2,15 @@ package com.game.pacman.tiles;
 
 import com.game.pacman.gfx.Assets;
 
-public class Point extends Tile {
+public class BlockTile extends Tile {
 
-	public Point(int id) {
-		super(Assets.point, id);
+	public BlockTile(int id) {
+		super(Assets.block, id);
 	}
 
 	@Override
 	public boolean isSolid() {
-		return false;
+		return true;
 	}
 
 }

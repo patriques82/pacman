@@ -6,6 +6,11 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+/**
+ * The game display, manages JFrame and Canvas
+ * @author patriknygren
+ *
+ */
 public class Display {
 	private JFrame frame;
 	private Canvas canvas;

@@ -3,26 +3,24 @@ package com.game.pacman.tiles;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-public abstract class Tile {
+public class Tile {
 	
-	public static final int TILEWIDTH = 20, TILEHEIGHT = 20;
+	public static final int TILESIZE = 30;
 
 	protected BufferedImage texture;
-	protected final int id;
+	protected final int id; // each tile has unique id
 
 	public Tile(BufferedImage texture, int id) {
 		this.texture = texture;
 		this.id = id;
 	}
 	
-	public void tick() {
-		
+	public boolean isSolid() {
+		return false;
 	}
 	
-	public abstract boolean isSolid();
-	
 	public void render(Graphics g, int x, int y) {
-		g.drawImage(texture, x, y, TILEWIDTH, TILEHEIGHT, null);
+		g.drawImage(texture, x, y, TILESIZE, TILESIZE, null);
 	}
 	
 	public int getId() {

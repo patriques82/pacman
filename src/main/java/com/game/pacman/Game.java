@@ -6,6 +6,11 @@ import java.awt.image.BufferStrategy;
 import com.game.pacman.display.Display;
 import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
+import com.game.pacman.levels.Handler;
+import com.game.pacman.states.GameState;
+import com.game.pacman.states.MenuState;
+import com.game.pacman.states.State;
+import com.game.pacman.states.StateManager;
 
 /**
  * Main class of game
@@ -15,8 +20,8 @@ import com.game.pacman.input.KeyManager;
 public class Game implements Runnable {
 
 	private Display display;
-	public int width, height;
-	public String title;
+	private int width, height;
+	private String title;
 
 	private Thread thread; // animator thread
 	private boolean running = false;
@@ -31,6 +36,9 @@ public class Game implements Runnable {
 	// Key manager
 	private KeyManager keyMngr;
 	
+	// Handler
+	private Handler handler;
+	
 	public Game(String title, int width, int height) {
 		this.title = title;
 		this.width = width;
@@ -38,12 +46,16 @@ public class Game implements Runnable {
 		keyMngr = new KeyManager();
 	}
 
+	/**
+	 * Initializes assets and creates states
+	 */
 	private void init() {
 		display = new Display(title, width, height);
 		display.addKeyListener(keyMngr);
 		Assets.init();
-		gameState = new GameState(this);
-		menuState = new MenuState(this);
+		handler = new Handler(this);
+		gameState = new GameState(handler);
+		menuState = new MenuState(handler);
 		StateManager.setState(gameState);
 	}
 
@@ -89,7 +101,7 @@ public class Game implements Runnable {
 	 */
 	private void tick() {
 		StateManager.tick();
-		keyMngr.tick();
+		KeyManager.tick();
 	}
 
 
@@ -103,6 +115,7 @@ public class Game implements Runnable {
 			return; // exit to avoid errors
 		}
 		g = bs.getDrawGraphics();
+
 		// Clear screen
 		g.clearRect(0, 0, width, height);
 
@@ -136,9 +149,13 @@ public class Game implements Runnable {
 			} catch (InterruptedException e) {}
 		}
 	}
-	
-	public KeyManager getKeyManager() {
-		return keyMngr;
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 }
