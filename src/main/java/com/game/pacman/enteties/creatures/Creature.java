@@ -7,10 +7,13 @@ public abstract class Creature extends Entity {
 
 	public static final int DEFAULT_HEALH = 10;
 	public static final float DEFAULT_SPEED = 3.0f;
+	
+	public enum Direction { UP, DOWN, LEFT, RIGHT };
+	private Direction dir;
+	private float dx, dy;
 
 	protected int health;
 	protected float speed;
-	protected float dx, dy;
 
 	public Creature(Handler h, int x, int y, int width, int height) {
 		super(h, x, y, width, height);
@@ -32,12 +35,14 @@ public abstract class Creature extends Entity {
 	public void moveX() {
 		float newX = x + dx + bounds.x;
 		if(dx > 0) { // right
+			dir = Direction.RIGHT;
 			// check upper right and lower right corners
 			if(!handler.collidesWithSolid(newX + bounds.width, y + bounds.y) &&
 			   !handler.collidesWithSolid(newX + bounds.width, y + bounds.y + bounds.height))
 				x += dx;
 		}
 		else if(dx < 0) { // left
+			dir = Direction.LEFT;
 			// check upper left and lower left corners
 			if(!handler.collidesWithSolid(newX, y + bounds.y) &&
 			   !handler.collidesWithSolid(newX, y + bounds.y + bounds.height))
@@ -54,12 +59,15 @@ public abstract class Creature extends Entity {
 	public void moveY() {
 		float newY = y + dy + bounds.y;
 		if(dy > 0) { // down
+			dir = Direction.DOWN;
 			// check lower left and lower right corners
 			if(!handler.collidesWithSolid(x + bounds.x, newY + bounds.height) &&
 			   !handler.collidesWithSolid(x + bounds.x + bounds.width, newY + bounds.height))
 				y += dy;
+			
 		}
 		else if(dy < 0) { // up
+			dir = Direction.UP;
 			// check upper left and upper right corners
 			if(!handler.collidesWithSolid(x + bounds.x, newY) &&
 			   !handler.collidesWithSolid(x + bounds.x + bounds.width, newY))
@@ -86,6 +94,10 @@ public abstract class Creature extends Entity {
 
 	public void setDy(float dy) {
 		this.dy = dy;
+	}
+	
+	public Direction getDir() {
+		return dir;
 	}
 
 	public int getHealth() {
