@@ -20,7 +20,6 @@ public class Player extends CreatureEntity {
 	public Player(GameHandler h, int x, int y) {
 		super(h, x, y, 1, 1); // size: 1 * 1 tiles
 		animation = new Animation(500, Assets.playerDown); // open/close mouth every 500 ms
-
 	}
 
 	/**
@@ -28,6 +27,8 @@ public class Player extends CreatureEntity {
 	 */
 	@Override
 	public void tick() {
+		if(this.health == 0)
+			handler.getGame().gameOver("Game Over");
 		getInput();
 		if(getDir() == Direction.DOWN)
 			animation.setFrames(Assets.playerDown);
@@ -44,6 +45,7 @@ public class Player extends CreatureEntity {
 	@Override
 	public void render(Graphics g) {
 		g.drawImage(animation.currentFrame(), (int) x, (int) y, width, height, null);
+//		g.fillRect((int) (bounds.x + x),(int) (bounds.y + y), bounds.width, bounds.height);
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class Player extends CreatureEntity {
 
 	@Override
 	public void enemyCollision(int x, int y, int dx, int dy) {
-		handler.getGame().gameOver("Game Over");
+		health = 0;
 	}
 
 }

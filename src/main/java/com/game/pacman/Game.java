@@ -85,7 +85,7 @@ public class Game implements Runnable {
 			}
 			// clear every second
 			if(timer >= 1000_000_000) {
-				System.out.println("Ticks and Frames: " + ticks);
+//				System.out.println("Ticks and Frames: " + ticks);
 				timer = 0;
 				ticks = 0;
 			}

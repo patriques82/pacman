@@ -12,7 +12,7 @@ public abstract class CreatureEntity extends Entity {
 	public static final float DEFAULT_SPEED = 3.0f;
 	
 	public enum Direction { UP, DOWN, LEFT, RIGHT };
-	private Direction dir;
+	protected Direction dir;
 	private float dx, dy;
 
 	protected int health;
@@ -32,6 +32,14 @@ public abstract class CreatureEntity extends Entity {
 	}
 	
 	/**
+	 * Stops the creature from moving
+	 */
+	public void stop() {
+		dx = 0;
+		dy = 0;
+	}
+	
+	/**
 	 * Moves creature if user has has sent signal
 	 * (Uses template pattern)
 	 */
@@ -39,7 +47,7 @@ public abstract class CreatureEntity extends Entity {
 		moveX();
 		moveY();
 		if(collideWithCreature()) {
-			enemyCollision((int) x, (int) y, (int) dx, (int) dy); // call implemented 
+			enemyCollision((int) x, (int) y, (int) dx, (int) dy); 
 		}
 	}
 	

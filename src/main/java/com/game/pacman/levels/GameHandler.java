@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.game.pacman.Game;
 import com.game.pacman.enteties.creatures.CreatureEntity;
+import com.game.pacman.enteties.creatures.Player;
 import com.game.pacman.tiles.Tile;
 
 /**
@@ -58,6 +59,10 @@ public class GameHandler {
 
 	public ArrayList<CreatureEntity> getCreatures() {
 		return world.getEntityManager().getCreatures();
+	}
+	
+	public Player getPlayer() {
+		return world.getEntityManager().getPlayer();
 	}
 	
 }
