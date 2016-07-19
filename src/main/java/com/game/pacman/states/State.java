@@ -2,13 +2,13 @@ package com.game.pacman.states;
 
 import java.awt.Graphics;
 
-import com.game.pacman.levels.Handler;
+import com.game.pacman.levels.GameHandler;
 
 public abstract class State {
 	
-	protected Handler handler;
+	protected GameHandler handler;
 	
-	public State(Handler handler) {
+	public State(GameHandler handler) {
 		this.handler = handler;
 	}
 

@@ -5,6 +5,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.game.pacman.enteties.EntityManager;
+import com.game.pacman.enteties.creatures.Player;
 import com.game.pacman.tiles.BlockTile;
 import com.game.pacman.tiles.EmptyTile;
 import com.game.pacman.tiles.Tile;
@@ -16,34 +18,45 @@ import com.game.pacman.tiles.Tile;
  */
 public class World {
 	
+	private GameHandler handler;
+	private int startX, startY; // start position for player
+
+	// Entities
+	private EntityManager entityMngr;
+
 	private int[][] tiles; 
 	private int width, height; // width and height of level in tiles
-	private int startX, startY; // start position for player
-	private Handler handler;
-
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
 	private static Tile EMPTY = new EmptyTile(0);
 	private static Tile BLOCK = new BlockTile(1);
 	private static Tile POINT = new EmptyTile(2);
 
-	public World(Handler handler, String path) {
+	public World(GameHandler handler, String path) {
 		this.handler = handler;
 		addTile(EMPTY);
 		addTile(BLOCK);
 		addTile(POINT);
-		loadLevel(path);
+		loadWorld(path);
+		entityMngr = new EntityManager(handler, new Player(handler, startX, startY)); 
+	}
+	
+	public void tick() {
+		entityMngr.tick();
 	}
 
 	/**
-	 * Renders the world
+	 * Renders the world and entities
 	 * @param g
 	 */
 	public void render(Graphics g) {
+		// Render world
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				getTile(x, y).render(g, x*Tile.TILESIZE, y*Tile.TILESIZE);
 			}
 		}
+		// Render entities after world
+		entityMngr.render(g);
 	}
 	
 	/**
@@ -96,8 +109,12 @@ public class World {
 			return EMPTY;
 		}
 	}
+	
+	public EntityManager getEntityManager() {
+		return this.entityMngr;
+	}
 
-	private void loadLevel(String path) {
+	private void loadWorld(String path) {
 		String file = readStringFromFile(path);
 		String[] tokens = file.split("\\s+");
 		width = parseInt(tokens[0]);
@@ -107,7 +124,17 @@ public class World {
 		tiles = new int[width][height];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				tiles[x][y] = parseInt(tokens[(x + (y * width)) + 4]);
+				int type = parseInt(tokens[(x + (y * width)) + 4]);
+				tiles[x][y] = type;
+				// TODO:
+//				if(type == 3)
+//					createMonster at  x, y
+//					entityManager.addCreature(monster)
+//					erase 3 replace with 0
+//				if(type == 1)
+//					createPoint at x y
+//					entityManager.addEntity(point)
+//					erase 2 replace with 0
 			}
 		}
 	}

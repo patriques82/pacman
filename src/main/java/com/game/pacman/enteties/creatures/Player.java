@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import com.game.pacman.gfx.Animation;
 import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
-import com.game.pacman.levels.Handler;
+import com.game.pacman.levels.GameHandler;
 import com.game.pacman.tiles.Tile;
 
 /**
@@ -13,21 +13,14 @@ import com.game.pacman.tiles.Tile;
  * @author patriknygren
  *
  */
-public class Player extends Creature {
-	private float boundsCover = 0.90f; // proportion of how much bounds cover body
-	
+public class Player extends CreatureEntity {
+
 	private Animation animation;
 	
-	public Player(Handler h, int x, int y) {
-		super(h, x, y, Tile.TILESIZE, Tile.TILESIZE);
+	public Player(GameHandler h, int x, int y) {
+		super(h, x, y, 1, 1); // size: 1 * 1 tiles
 		animation = new Animation(500, Assets.playerDown); // open/close mouth every 500 ms
 
-		// Override default settings of entity to not cover whole body
-		float offset = Tile.TILESIZE * (1-boundsCover);
-		bounds.x = (int)(offset/2);
-		bounds.y = (int)(offset/2);
-		bounds.width = (int) (Tile.TILESIZE * boundsCover);
-		bounds.height = (int) (Tile.TILESIZE * boundsCover);
 	}
 
 	/**
@@ -50,7 +43,7 @@ public class Player extends Creature {
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(animation.currentFrame(), (int) x, (int) y, Tile.TILESIZE, Tile.TILESIZE, null);
+		g.drawImage(animation.currentFrame(), (int) x, (int) y, width, height, null);
 	}
 
 	/**
@@ -67,6 +60,11 @@ public class Player extends Creature {
 			setDx(-speed);
 		if(KeyManager.pressRight())
 			setDx(speed);
+	}
+
+	@Override
+	public void enemyCollision(int x, int y, int dx, int dy) {
+		handler.getGame().gameOver("Game Over");
 	}
 
 }

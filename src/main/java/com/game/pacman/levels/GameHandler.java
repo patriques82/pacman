@@ -1,6 +1,9 @@
 package com.game.pacman.levels;
 
+import java.util.ArrayList;
+
 import com.game.pacman.Game;
+import com.game.pacman.enteties.creatures.CreatureEntity;
 import com.game.pacman.tiles.Tile;
 
 /**
@@ -8,12 +11,12 @@ import com.game.pacman.tiles.Tile;
  * @author patriknygren
  *
  */
-public class Handler {
+public class GameHandler {
 
 	private World world;
 	private Game game;
 	
-	public Handler(Game game) {
+	public GameHandler(Game game) {
 		this.game = game;
 	}
 
@@ -33,6 +36,14 @@ public class Handler {
 		return world.getStartY() * Tile.TILESIZE;
 	}
 
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
 	public World getWorld() {
 		return world;
 	}
@@ -44,4 +55,9 @@ public class Handler {
 	public boolean collidesWithSolid(float x, float y) {
 		return world.getTile((int)(x/Tile.TILESIZE), (int) (y/Tile.TILESIZE)).isSolid();
 	}
+
+	public ArrayList<CreatureEntity> getCreatures() {
+		return world.getEntityManager().getCreatures();
+	}
+	
 }

@@ -2,12 +2,12 @@ package com.game.pacman.states;
 
 import java.awt.Graphics;
 
-import com.game.pacman.levels.Handler;
+import com.game.pacman.levels.GameHandler;
 
 public class MenuState extends State {
 	
 
-	public MenuState(Handler handler) {
+	public MenuState(GameHandler handler) {
 		super(handler);
 	}
 

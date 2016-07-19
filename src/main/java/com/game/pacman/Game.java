@@ -6,11 +6,8 @@ import java.awt.image.BufferStrategy;
 import com.game.pacman.display.Display;
 import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
-import com.game.pacman.levels.Handler;
-import com.game.pacman.states.GameState;
-import com.game.pacman.states.MenuState;
-import com.game.pacman.states.State;
-import com.game.pacman.states.StateManager;
+import com.game.pacman.levels.GameHandler;
+import com.game.pacman.states.*;
 
 /**
  * Main class of game
@@ -31,13 +28,13 @@ public class Game implements Runnable {
 	private Graphics g;
 	
 	// States
-	private State gameState, menuState, settingsState;
+	private State gameState; // TODO:, menuState, settingsState;
 	
 	// Key manager
 	private KeyManager keyMngr;
 	
 	// Handler
-	private Handler handler;
+	private GameHandler handler;
 	
 	public Game(String title, int width, int height) {
 		this.title = title;
@@ -53,9 +50,9 @@ public class Game implements Runnable {
 		display = new Display(title, width, height);
 		display.addKeyListener(keyMngr);
 		Assets.init();
-		handler = new Handler(this);
+		handler = new GameHandler(this);
 		gameState = new GameState(handler);
-		menuState = new MenuState(handler);
+//		menuState = new MenuState(handler);
 		StateManager.setState(gameState);
 	}
 
@@ -148,6 +145,10 @@ public class Game implements Runnable {
 				thread.join();
 			} catch (InterruptedException e) {}
 		}
+	}
+	
+	public void gameOver(String message) {
+		StateManager.setState(new GameOverState(handler, message));
 	}
 
 	public int getWidth() {

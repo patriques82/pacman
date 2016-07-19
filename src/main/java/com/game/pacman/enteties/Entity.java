@@ -3,21 +3,22 @@ package com.game.pacman.enteties;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import com.game.pacman.levels.Handler;
+import com.game.pacman.levels.GameHandler;
+import com.game.pacman.tiles.Tile;
 
 public abstract class Entity {
 
-	protected float x, y;
+	protected float x, y; // coordinates in tiles
 	protected int width, height;
 	protected Rectangle bounds;
-	protected Handler handler;
+	protected GameHandler handler;
 	
-	public Entity(Handler handler, int x, int y, int w, int h) {
+	public Entity(GameHandler handler, int x, int y, int w, int h) {
 		this.handler = handler;
-		this.x = x;
-		this.y = y;
-		width = w;
-		height = h;
+		this.x = x * Tile.TILESIZE;
+		this.y = y * Tile.TILESIZE;
+		width = w * Tile.TILESIZE;
+		height = h * Tile.TILESIZE;
 		bounds = new Rectangle(0, 0, width, height); // default bounds is same size as entity
 	}
 
@@ -54,6 +55,10 @@ public abstract class Entity {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle((int)(x + bounds.x),(int)(y + bounds.y), width, height);
 	}
 
 }
