@@ -1,7 +1,7 @@
 package com.game.pacman.enteties.creatures;
 
 import com.game.pacman.enteties.Entity;
-import com.game.pacman.levels.GameHandler;
+import com.game.pacman.levels.World;
 import com.game.pacman.tiles.Tile;
 
 public abstract class CreatureEntity extends Entity {
@@ -11,15 +11,18 @@ public abstract class CreatureEntity extends Entity {
 	public static final int DEFAULT_HEALH = 10;
 	public static final float DEFAULT_SPEED = 3.0f;
 	
-	public enum Direction { UP, DOWN, LEFT, RIGHT };
+	enum Direction { UP, DOWN, LEFT, RIGHT };
 	protected Direction dir;
+
 	private float dx, dy;
 
 	protected int health;
 	protected float speed;
+	//protected World world;
 
-	public CreatureEntity(GameHandler h, int x, int y, int width, int height) {
-		super(h, x, y, width, height);
+	public CreatureEntity(int x, int y, int width, int height) {
+		super(x, y, width, height);
+		//world = w;
 		health = DEFAULT_HEALH;
 		speed = DEFAULT_SPEED;
 
@@ -43,32 +46,29 @@ public abstract class CreatureEntity extends Entity {
 	 * Moves creature if user has has sent signal
 	 * (Uses template pattern)
 	 */
-	public void move() {
-		moveX();
-		moveY();
-		if(collideWithCreature()) {
-			enemyCollision((int) x, (int) y, (int) dx, (int) dy); 
-		}
+	public void move(World w) {
+		moveX(w);
+		moveY(w);
 	}
 	
 	/**
 	 * Moves creature in x direction if no collision with solid tiles
 	 */
-	public void moveX() {
+	public void moveX(World w) {
 		float newX = x + dx + bounds.x;
 		if(dx > 0) { // right
-			dir = Direction.RIGHT;
 			// check upper right and lower right corners
-			if(!handler.collidesWithSolid(newX + bounds.width, y + bounds.y) &&
-			   !handler.collidesWithSolid(newX + bounds.width, y + bounds.y + bounds.height)) {
+			if(!collidesWithSolid(newX + bounds.width, y + bounds.y, w) &&
+			   !collidesWithSolid(newX + bounds.width, y + bounds.y + bounds.height, w)) {
+				dir = Direction.RIGHT;
 				x += dx;
 			}
 		}
 		else if(dx < 0) { // left
-			dir = Direction.LEFT;
 			// check upper left and lower left corners
-			if(!handler.collidesWithSolid(newX, y + bounds.y) &&
-			   !handler.collidesWithSolid(newX, y + bounds.y + bounds.height)) {
+			if(!collidesWithSolid(newX, y + bounds.y, w) &&
+			   !collidesWithSolid(newX, y + bounds.y + bounds.height, w)) {
+				dir = Direction.LEFT;
 				x += dx;
 			}
 		}
@@ -80,22 +80,22 @@ public abstract class CreatureEntity extends Entity {
 	/**
 	 * Moves creature in y direction if no collision with solid tiles
 	 */
-	public void moveY() {
+	public void moveY(World w) {
 		float newY = y + dy + bounds.y;
 		if(dy > 0) { // down
-			dir = Direction.DOWN;
 			// check lower left and lower right corners
-			if(!handler.collidesWithSolid(x + bounds.x, newY + bounds.height) &&
-			   !handler.collidesWithSolid(x + bounds.x + bounds.width, newY + bounds.height)) {
+			if(!collidesWithSolid(x + bounds.x, newY + bounds.height, w) &&
+			   !collidesWithSolid(x + bounds.x + bounds.width, newY + bounds.height, w)) {
+				dir = Direction.DOWN;
 				y += dy;
 			}
 			
 		}
 		else if(dy < 0) { // up
-			dir = Direction.UP;
 			// check upper left and upper right corners
-			if(!handler.collidesWithSolid(x + bounds.x, newY) &&
-			   !handler.collidesWithSolid(x + bounds.x + bounds.width, newY)) {
+			if(!collidesWithSolid(x + bounds.x, newY, w) &&
+			   !collidesWithSolid(x + bounds.x + bounds.width, newY, w)) {
+				dir = Direction.UP;
 				y += dy;
 			}
 		}
@@ -107,15 +107,9 @@ public abstract class CreatureEntity extends Entity {
 	// What to do when colliding with enemy
 	public abstract void enemyCollision(int x, int y, int dx, int dy);
 
-	private boolean collideWithCreature() {
-		for(CreatureEntity creature : handler.getCreatures()) {
-			if(!creature.equals(this)) {
-				if(this.getBounds().intersects(creature.getBounds())) {
-					return true;
-				}
-			}
-		}
-		return false;
+
+	private boolean collidesWithSolid(float x, float y, World world) {
+		return world.getTile((int)(x/Tile.TILESIZE), (int) (y/Tile.TILESIZE)).isSolid();
 	}
 
 	// Getters, Setters

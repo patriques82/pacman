@@ -3,15 +3,16 @@ package com.game.pacman.states;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import com.game.pacman.levels.GameHandler;
-
 public class GameOverState extends State {
 
 	private String message;
+	private int centerX;
+	private int centerY;
 
-	public GameOverState(GameHandler handler, String msg) {
-		super(handler);
-		message = msg;
+	public GameOverState(String message, int centerX, int centerY) {
+		this.message = message;
+		this.centerX = centerX;
+		this.centerY = centerY;
 	}
 
 	@Override
@@ -23,7 +24,7 @@ public class GameOverState extends State {
 	public void render(Graphics g) {
 		g.setFont(new Font("Monospaced", Font.BOLD, 25));
 		int textXOffset = g.getFontMetrics().stringWidth(message) / 2;
-		g.drawString(message, handler.getWidth()/2 - textXOffset, handler.getHeight()/2);
+		g.drawString(message, centerX - textXOffset, centerY);
 	}
 
 }

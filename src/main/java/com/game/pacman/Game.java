@@ -6,7 +6,6 @@ import java.awt.image.BufferStrategy;
 import com.game.pacman.display.Display;
 import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
-import com.game.pacman.levels.GameHandler;
 import com.game.pacman.states.*;
 
 /**
@@ -33,8 +32,6 @@ public class Game implements Runnable {
 	// Key manager
 	private KeyManager keyMngr;
 	
-	// Handler
-	private GameHandler handler;
 	
 	public Game(String title, int width, int height) {
 		this.title = title;
@@ -50,8 +47,7 @@ public class Game implements Runnable {
 		display = new Display(title, width, height);
 		display.addKeyListener(keyMngr);
 		Assets.init();
-		handler = new GameHandler(this);
-		gameState = new GameState(handler);
+		gameState = new GameState();
 //		menuState = new MenuState(handler);
 		StateManager.setState(gameState);
 	}
@@ -99,6 +95,9 @@ public class Game implements Runnable {
 	private void tick() {
 		StateManager.tick();
 		KeyManager.tick();
+		// TODO
+		//if(StateManager.)
+		//	StateManager.setState(new GameOverState("Game Over", width/2, height/2));
 	}
 
 
@@ -147,10 +146,6 @@ public class Game implements Runnable {
 		}
 	}
 	
-	public void gameOver(String message) {
-		StateManager.setState(new GameOverState(handler, message));
-	}
-
 	public int getWidth() {
 		return width;
 	}

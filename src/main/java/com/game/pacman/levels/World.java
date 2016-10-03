@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.game.pacman.enteties.EntityManager;
+import com.game.pacman.enteties.creatures.Monster;
 import com.game.pacman.enteties.creatures.Player;
 import com.game.pacman.tiles.BlockTile;
 import com.game.pacman.tiles.EmptyTile;
@@ -18,7 +19,6 @@ import com.game.pacman.tiles.Tile;
  */
 public class World {
 	
-	private GameHandler handler;
 	private int startX, startY; // start position for player
 
 	// Entities
@@ -29,15 +29,21 @@ public class World {
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
 	private static Tile EMPTY = new EmptyTile(0);
 	private static Tile BLOCK = new BlockTile(1);
-	private static Tile POINT = new EmptyTile(2);
+	private static Tile POINT = new EmptyTile(2); // TODO: make point
 
-	public World(GameHandler handler, String path) {
-		this.handler = handler;
+	public World(String path) {
 		addTile(EMPTY);
 		addTile(BLOCK);
 		addTile(POINT);
 		loadWorld(path);
-		entityMngr = new EntityManager(handler, new Player(handler, startX, startY)); 
+
+		entityMngr = new EntityManager(); 
+		// Player
+		Player player = new Player(startX, startY, this);
+		entityMngr.setPlayer(player);
+		// hard coded test
+		Monster monster = new Monster(16, 18, this);
+		entityMngr.addCreature(monster);
 	}
 	
 	public void tick() {
@@ -59,30 +65,6 @@ public class World {
 		entityMngr.render(g);
 	}
 	
-	/**
-	 * Getter for start x position for player
-	 * @return startX start x position
-	 */
-	public int getStartX() {
-		return startX;
-	}
-
-	public void setStartX(int startX) {
-		this.startX = startX;
-	}
-
-	/**
-	 * Getter for start y position for player
-	 * @return startY start y position
-	 */
-	public int getStartY() {
-		return startY;
-	}
-
-	public void setStartY(int startY) {
-		this.startY = startY;
-	}
-
 	/**
 	 * Adds new type of tile to available tiles in the world
 	 * @param t Tile to add

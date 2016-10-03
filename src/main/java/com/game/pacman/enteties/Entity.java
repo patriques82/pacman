@@ -3,7 +3,6 @@ package com.game.pacman.enteties;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import com.game.pacman.levels.GameHandler;
 import com.game.pacman.tiles.Tile;
 
 public abstract class Entity {
@@ -11,10 +10,8 @@ public abstract class Entity {
 	protected float x, y; // coordinates in tiles
 	protected int width, height;
 	protected Rectangle bounds;
-	protected GameHandler handler;
 	
-	public Entity(GameHandler handler, int x, int y, int w, int h) {
-		this.handler = handler;
+	public Entity(int x, int y, int w, int h) {
 		this.x = x * Tile.TILESIZE;
 		this.y = y * Tile.TILESIZE;
 		width = w * Tile.TILESIZE;

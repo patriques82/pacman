@@ -5,8 +5,7 @@ import java.awt.Graphics;
 import com.game.pacman.gfx.Animation;
 import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
-import com.game.pacman.levels.GameHandler;
-import com.game.pacman.tiles.Tile;
+import com.game.pacman.levels.World;
 
 /**
  * The hero class of the game!
@@ -16,9 +15,11 @@ import com.game.pacman.tiles.Tile;
 public class Player extends CreatureEntity {
 
 	private Animation animation;
+	private World world;
 	
-	public Player(GameHandler h, int x, int y) {
-		super(h, x, y, 1, 1); // size: 1 * 1 tiles
+	public Player(int x, int y, World w) {
+		super(x, y, 1, 1); // size: 1 * 1 tiles
+		world = w;
 		animation = new Animation(500, Assets.playerDown); // open/close mouth every 500 ms
 	}
 
@@ -27,8 +28,6 @@ public class Player extends CreatureEntity {
 	 */
 	@Override
 	public void tick() {
-		if(this.health == 0)
-			handler.getGame().gameOver("Game Over");
 		getInput();
 		if(getDir() == Direction.DOWN)
 			animation.setFrames(Assets.playerDown);
@@ -39,7 +38,7 @@ public class Player extends CreatureEntity {
 		if(getDir() == Direction.LEFT)
 			animation.setFrames(Assets.playerLeft);
 		animation.tick();
-		move();
+		move(world);
 	}
 
 	@Override
