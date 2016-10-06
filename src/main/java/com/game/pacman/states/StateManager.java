@@ -11,13 +11,12 @@ public class StateManager {
 	
 	private static State currentState;
 	
-	public static void setState(State state) {
-		currentState = state;
-	}
-	
 	public static void tick() {
-		if(currentState != null)
+		if(currentState != null) {
 			currentState.tick();
+			if(currentState.hasEnded())
+				currentState = currentState.getNextState();
+		}
 	}
 
 	public static void render(Graphics g) {
@@ -25,4 +24,8 @@ public class StateManager {
 			currentState.render(g);
 	}
 
+	public static void setState(State state) {
+		currentState = state;
+	}
+	
 }

@@ -48,6 +48,7 @@ public class EntityManager {
 		for(CreatureEntity c : creatures) {
 			if(!c.equals(creature)) {
 				if(c.getBounds().intersects(creature.getBounds())) {
+					System.out.println("Collision");
 					return true;
 				}
 			}
@@ -61,7 +62,7 @@ public class EntityManager {
 
 	public void setPlayer(Player player) {
 		this.player = player;
-		enteties.add(player);
+		creatures.add(player);
 	}
 
 	public ArrayList<Entity> getEnteties() {

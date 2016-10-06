@@ -16,4 +16,10 @@ public class MenuState extends State {
 		
 	}
 
+	@Override
+	public boolean hasEnded() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

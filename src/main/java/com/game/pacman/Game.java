@@ -32,7 +32,6 @@ public class Game implements Runnable {
 	// Key manager
 	private KeyManager keyMngr;
 	
-	
 	public Game(String title, int width, int height) {
 		this.title = title;
 		this.width = width;
@@ -48,6 +47,7 @@ public class Game implements Runnable {
 		display.addKeyListener(keyMngr);
 		Assets.init();
 		gameState = new GameState();
+		gameState.setNextState(new GameOverState("Game Over", width/2, height/2));
 //		menuState = new MenuState(handler);
 		StateManager.setState(gameState);
 	}

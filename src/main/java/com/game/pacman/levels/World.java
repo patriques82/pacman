@@ -8,6 +8,7 @@ import java.io.IOException;
 import com.game.pacman.enteties.EntityManager;
 import com.game.pacman.enteties.creatures.Monster;
 import com.game.pacman.enteties.creatures.Player;
+import com.game.pacman.states.Observable;
 import com.game.pacman.tiles.BlockTile;
 import com.game.pacman.tiles.EmptyTile;
 import com.game.pacman.tiles.Tile;
@@ -17,7 +18,7 @@ import com.game.pacman.tiles.Tile;
  * @author patriknygren
  *
  */
-public class World {
+public class World extends Observable {
 	
 	private int startX, startY; // start position for player
 
@@ -48,6 +49,9 @@ public class World {
 	
 	public void tick() {
 		entityMngr.tick();
+		if(entityMngr.getPlayer().getHealth() == 0) {
+			this.notifyObserver();
+		}
 	}
 
 	/**
@@ -147,5 +151,5 @@ public class World {
 			return 0;
 		}
 	}
-	
+
 }
