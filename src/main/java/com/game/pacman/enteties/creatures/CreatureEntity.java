@@ -1,5 +1,7 @@
 package com.game.pacman.enteties.creatures;
 
+import java.util.List;
+
 import com.game.pacman.enteties.Entity;
 import com.game.pacman.levels.World;
 import com.game.pacman.tiles.Tile;
@@ -49,6 +51,9 @@ public abstract class CreatureEntity extends Entity {
 	public void move(World w) {
 		moveX(w);
 		moveY(w);
+		if(collideWithCreature(w.getEntityManager().getCreatures())) {
+			enemyCollision((int) x, (int) y, (int) dx, (int) dy); // call implemented 
+		}
 	}
 	
 	/**
@@ -102,6 +107,18 @@ public abstract class CreatureEntity extends Entity {
 		else { // not moving in y
 			
 		}
+	}
+
+	public boolean collideWithCreature(List<CreatureEntity> creatures) {
+		for(CreatureEntity c : creatures) {
+			if(!this.equals(c)) {
+				if(this.getBounds().intersects(c.getBounds())) {
+					System.out.println("Collision");
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	// What to do when colliding with enemy

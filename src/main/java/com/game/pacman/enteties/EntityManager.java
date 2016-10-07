@@ -44,17 +44,6 @@ public class EntityManager {
 		}
 	}
 
-	public boolean collideWithCreature(CreatureEntity creature) {
-		for(CreatureEntity c : creatures) {
-			if(!c.equals(creature)) {
-				if(c.getBounds().intersects(creature.getBounds())) {
-					System.out.println("Collision");
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 
 	public Player getPlayer() {
 		return player;
