@@ -1,4 +1,4 @@
-package com.game.pacman.enteties.creatures.intelligence;
+package com.game.pacman.world.enteties.creatures.intelligence;
 
 public class Context {
 	private Strategy strategy;

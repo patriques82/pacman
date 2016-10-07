@@ -1,9 +1,9 @@
-package com.game.pacman.enteties;
+package com.game.pacman.world.enteties;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import com.game.pacman.tiles.Tile;
+import com.game.pacman.world.tiles.Tile;
 
 public abstract class Entity {
 

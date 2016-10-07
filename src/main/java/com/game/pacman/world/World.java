@@ -1,17 +1,16 @@
-package com.game.pacman.levels;
+package com.game.pacman.world;
 
 import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.game.pacman.enteties.EntityManager;
-import com.game.pacman.enteties.creatures.Monster;
-import com.game.pacman.enteties.creatures.Player;
-import com.game.pacman.states.Observable;
-import com.game.pacman.tiles.BlockTile;
-import com.game.pacman.tiles.EmptyTile;
-import com.game.pacman.tiles.Tile;
+import com.game.pacman.world.enteties.EntityManager;
+import com.game.pacman.world.enteties.creatures.Monster;
+import com.game.pacman.world.enteties.creatures.Player;
+import com.game.pacman.world.tiles.BlockTile;
+import com.game.pacman.world.tiles.EmptyTile;
+import com.game.pacman.world.tiles.Tile;
 
 /**
  * Represents the world and the static tiles

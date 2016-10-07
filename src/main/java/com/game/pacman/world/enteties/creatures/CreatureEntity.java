@@ -1,10 +1,10 @@
-package com.game.pacman.enteties.creatures;
+package com.game.pacman.world.enteties.creatures;
 
 import java.util.List;
 
-import com.game.pacman.enteties.Entity;
-import com.game.pacman.levels.World;
-import com.game.pacman.tiles.Tile;
+import com.game.pacman.world.World;
+import com.game.pacman.world.enteties.Entity;
+import com.game.pacman.world.tiles.Tile;
 
 public abstract class CreatureEntity extends Entity {
 

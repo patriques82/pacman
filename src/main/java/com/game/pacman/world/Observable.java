@@ -1,4 +1,4 @@
-package com.game.pacman.states;
+package com.game.pacman.world;
 
 public abstract class Observable {
 

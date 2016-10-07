@@ -1,4 +1,4 @@
-package com.game.pacman.tiles;
+package com.game.pacman.world.tiles;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

@@ -2,7 +2,8 @@ package com.game.pacman.states;
 
 import java.awt.Graphics;
 
-import com.game.pacman.levels.World;
+import com.game.pacman.world.Observer;
+import com.game.pacman.world.World;
 
 public class GameState extends State implements Observer {
 

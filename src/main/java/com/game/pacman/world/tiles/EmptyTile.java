@@ -1,6 +1,6 @@
-package com.game.pacman.tiles;
+package com.game.pacman.world.tiles;
 
-import com.game.pacman.gfx.Assets;
+import com.game.pacman.world.gfx.Assets;
 
 public class EmptyTile extends Tile {
 

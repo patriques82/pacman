@@ -1,4 +1,4 @@
-package com.game.pacman.gfx;
+package com.game.pacman.world.gfx;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

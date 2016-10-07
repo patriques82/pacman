@@ -1,10 +1,10 @@
-package com.game.pacman.enteties;
+package com.game.pacman.world.enteties;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-import com.game.pacman.enteties.creatures.CreatureEntity;
-import com.game.pacman.enteties.creatures.Player;
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
+import com.game.pacman.world.enteties.creatures.Player;
 
 public class EntityManager {
 

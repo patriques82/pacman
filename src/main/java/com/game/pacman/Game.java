@@ -4,9 +4,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import com.game.pacman.display.Display;
-import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
 import com.game.pacman.states.*;
+import com.game.pacman.world.gfx.Assets;
 
 /**
  * Main class of game

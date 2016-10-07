@@ -1,11 +1,11 @@
-package com.game.pacman.enteties.creatures;
+package com.game.pacman.world.enteties.creatures;
 
 import java.awt.Graphics;
 
-import com.game.pacman.gfx.Animation;
-import com.game.pacman.gfx.Assets;
 import com.game.pacman.input.KeyManager;
-import com.game.pacman.levels.World;
+import com.game.pacman.world.World;
+import com.game.pacman.world.gfx.Animation;
+import com.game.pacman.world.gfx.Assets;
 
 /**
  * The hero class of the game!

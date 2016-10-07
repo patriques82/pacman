@@ -2,6 +2,8 @@ package com.game.pacman.states;
 
 import java.awt.Graphics;
 
+import com.game.pacman.world.Observable;
+
 public abstract class State extends Observable {
 	
 	private State nextState;

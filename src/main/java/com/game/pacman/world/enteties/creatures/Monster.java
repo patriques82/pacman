@@ -1,13 +1,13 @@
-package com.game.pacman.enteties.creatures;
+package com.game.pacman.world.enteties.creatures;
 
 import java.awt.Graphics;
 
-import com.game.pacman.enteties.creatures.intelligence.Context;
-import com.game.pacman.enteties.creatures.intelligence.FollowingStrategy;
-import com.game.pacman.gfx.Animation;
-import com.game.pacman.gfx.Assets;
-import com.game.pacman.levels.World;
-import com.game.pacman.tiles.Tile;
+import com.game.pacman.world.World;
+import com.game.pacman.world.enteties.creatures.intelligence.Context;
+import com.game.pacman.world.enteties.creatures.intelligence.FollowingStrategy;
+import com.game.pacman.world.gfx.Animation;
+import com.game.pacman.world.gfx.Assets;
+import com.game.pacman.world.tiles.Tile;
 
 public class Monster extends CreatureEntity {
 
