@@ -1,4 +1,4 @@
-package com.game.pacman.world;
+package com.game.pacman.world.observer;
 
 public interface Observer {
 

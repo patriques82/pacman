@@ -8,6 +8,7 @@ import java.io.IOException;
 import com.game.pacman.world.enteties.EntityManager;
 import com.game.pacman.world.enteties.creatures.Monster;
 import com.game.pacman.world.enteties.creatures.Player;
+import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
 import com.game.pacman.world.tiles.Tile;
@@ -42,7 +43,7 @@ public class World extends Observable {
 		Player player = new Player(startX, startY, this);
 		entityMngr.setPlayer(player);
 		// hard coded test
-		Monster monster = new Monster(16, 18, this);
+		Monster monster = new Monster(16, 18, this, player);
 		entityMngr.addCreature(monster);
 	}
 	
@@ -75,6 +76,10 @@ public class World extends Observable {
 	public void addTile(Tile t) {
 		if(TILE_TYPES[t.getId()] == null)
 			TILE_TYPES[t.getId()] = t;
+	}
+	
+	public int[][] getTiles() {
+		return tiles;
 	}
 	
 	/**

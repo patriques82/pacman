@@ -2,7 +2,7 @@ package com.game.pacman.states;
 
 import java.awt.Graphics;
 
-import com.game.pacman.world.Observable;
+import com.game.pacman.world.observer.Observable;
 
 public abstract class State extends Observable {
 	

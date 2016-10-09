@@ -1,13 +1,14 @@
-package com.game.pacman.world.enteties.creatures.intelligence;
+package com.game.pacman.world.enteties.creatures.strategy;
 
 public class FollowingStrategy implements Strategy {
-	private enum Movement { FORWARD, STOP, REVERSE };
+	
 
 	@Override
 	public void findPath() {
 		// TODO Auto-generated method stub
 	}
 
+	// Set dx, dy
 	private void setDirection() {
 		/*
 		float px = handler.getPlayer().getX();
@@ -25,15 +26,6 @@ public class FollowingStrategy implements Strategy {
 		*/
 	}
 	
-	private Movement getMovement(float playerPos, float entityPos) {
-		float d = playerPos - entityPos;
-		if(d > 0.1)
-			return Movement.FORWARD;
-		else if(d < 0.1)
-			return Movement.REVERSE;
-		else
-			return Movement.STOP;
-	}
 
 
 }
