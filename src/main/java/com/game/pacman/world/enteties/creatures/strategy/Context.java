@@ -9,22 +9,21 @@ public class Context {
 	
 	public void computeDirection(int[][] tiles, float startX, float startY, float destX, float destY) {
 		// TODO Auto-generated method stub
-
 	}
 	
-	public boolean directionUp() {
+	public boolean pressUp() {
 		return false;
 	}
 
-	public boolean directionDown() {
+	public boolean pressDown() {
 		return false;
 	}
 
-	public boolean directionLeft() {
+	public boolean pressLeft() {
 		return true;
 	}
 
-	public boolean directionRight() {
+	public boolean pressRight() {
 		return false;
 	}
 

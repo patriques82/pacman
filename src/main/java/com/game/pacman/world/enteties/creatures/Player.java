@@ -20,7 +20,7 @@ public class Player extends CreatureEntity {
 	public Player(int x, int y, World w) {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
-		animation = new Animation(500, Assets.playerDown); // open/close mouth every 500 ms
+		animation = new Animation(500, Assets.playerRight); // open/close mouth every 500 ms
 	}
 
 	/**

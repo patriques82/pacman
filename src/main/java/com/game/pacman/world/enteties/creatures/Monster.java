@@ -2,9 +2,10 @@ package com.game.pacman.world.enteties.creatures;
 
 import java.awt.Graphics;
 
+import com.game.pacman.input.KeyManager;
 import com.game.pacman.world.World;
-import com.game.pacman.world.enteties.creatures.intelligence.Context;
-import com.game.pacman.world.enteties.creatures.intelligence.FollowingStrategy;
+import com.game.pacman.world.enteties.creatures.strategy.Context;
+import com.game.pacman.world.enteties.creatures.strategy.FollowingStrategy;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
 import com.game.pacman.world.tiles.Tile;
@@ -14,17 +15,27 @@ public class Monster extends CreatureEntity {
 	private Animation animation;
 	private World world;
 	private Context ctx;
+	private Player player;
 	
-	public Monster(int x, int y, World w) {
+	public Monster(int x, int y, World w, Player p) {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		ctx = new Context(new FollowingStrategy());
 		world = w;
+		player = p;
 		animation = new Animation(500, Assets.monsterUp);
 	}
+	
+	
+	
+	public void setAnimation(Direction dir) {
+		
+	}
 
+	// TODO: make to template method but keep animation class in Monster and Player
 	@Override
 	public void tick() {
-		ctx.move(); // TODO: should be intelligent
+		getInput();
+
 		// Set correct animation
 		if(getDir() == Direction.DOWN)
 			animation.setFrames(Assets.monsterDown);
@@ -41,6 +52,21 @@ public class Monster extends CreatureEntity {
 // ************************************************************************************
 // ************************ Sets direction (AI) ***************************************
 // ************************************************************************************
+
+
+	private void getInput() {
+		ctx.computeDirection(world.getTiles(), getX(), getY(), player.getX(), player.getY()); // TODO: should be intelligent
+		if(ctx.pressUp())
+			setDy(-speed);
+		if(ctx.pressDown())
+			setDy(speed);
+		if(ctx.pressLeft())
+			setDx(-speed);
+		if(ctx.pressRight())
+			setDx(speed);
+		
+	}
+
 
 
 	@Override
