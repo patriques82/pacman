@@ -1,4 +1,4 @@
-package com.game.pacman.world.enteties.creatures.strategy;
+package com.game.pacman.world.enteties.creatures.agent;
 
 public class FollowingStrategy implements Strategy {
 	

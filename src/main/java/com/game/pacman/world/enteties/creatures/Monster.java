@@ -4,8 +4,8 @@ import java.awt.Graphics;
 
 import com.game.pacman.input.KeyManager;
 import com.game.pacman.world.World;
-import com.game.pacman.world.enteties.creatures.strategy.Context;
-import com.game.pacman.world.enteties.creatures.strategy.FollowingStrategy;
+import com.game.pacman.world.enteties.creatures.agent.Agent;
+import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
 import com.game.pacman.world.tiles.Tile;
@@ -14,14 +14,14 @@ public class Monster extends CreatureEntity {
 
 	private Animation animation;
 	private World world;
-	private Context ctx;
+	private Agent agent;
 	private Player player;
 	
 	public Monster(int x, int y, World w, Player p) {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
-		ctx = new Context(new FollowingStrategy());
 		world = w;
 		player = p;
+		agent = new Agent(w.getTiles(), new FollowingStrategy());
 		animation = new Animation(500, Assets.monsterUp);
 	}
 	
@@ -55,14 +55,14 @@ public class Monster extends CreatureEntity {
 
 
 	private void getInput() {
-		ctx.computeDirection(world.getTiles(), getX(), getY(), player.getX(), player.getY()); // TODO: should be intelligent
-		if(ctx.pressUp())
+		agent.computeDirection(getX(), getY(), player.getX(), player.getY()); // TODO: should be intelligent
+		if(agent.pressUp())
 			setDy(-speed);
-		if(ctx.pressDown())
+		if(agent.pressDown())
 			setDy(speed);
-		if(ctx.pressLeft())
+		if(agent.pressLeft())
 			setDx(-speed);
-		if(ctx.pressRight())
+		if(agent.pressRight())
 			setDx(speed);
 		
 	}

@@ -1,13 +1,13 @@
-package com.game.pacman.world.enteties.creatures.strategy;
+package com.game.pacman.world.enteties.creatures.agent;
 
-public class Context {
+public class Agent {
 	private Strategy strategy;
 	
-	public Context(Strategy strategy) {
+	public Agent(int[][] tiles, Strategy strategy) {
 		this.strategy = strategy;
 	}
 	
-	public void computeDirection(int[][] tiles, float startX, float startY, float destX, float destY) {
+	public void computeDirection(float startX, float startY, float destX, float destY) {
 		// TODO Auto-generated method stub
 	}
 	
