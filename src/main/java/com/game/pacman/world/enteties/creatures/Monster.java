@@ -19,7 +19,6 @@ public class Monster extends CreatureEntity {
 	public Monster(int x, int y, World w, Player p) {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
-		speed = 1.5f;
 		player = p;
 		agent = new Agent(new FollowingStrategy(w.getTiles()));
 		animation = new Animation(500, Assets.monsterUp);

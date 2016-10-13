@@ -27,10 +27,11 @@ public class World extends Observable {
 
 	private int[][] tiles; 
 	private int width, height; // width and height of level in tiles
+
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
-	private static Tile EMPTY = new EmptyTile(0);
-	private static Tile BLOCK = new BlockTile(1);
-	private static Tile POINT = new EmptyTile(2); // TODO: make point
+	public static Tile EMPTY = new EmptyTile(0);
+	public static Tile BLOCK = new BlockTile(1);
+	public static Tile POINT = new EmptyTile(2); // TODO: make point
 
 	public World(String path) {
 		addTile(EMPTY);

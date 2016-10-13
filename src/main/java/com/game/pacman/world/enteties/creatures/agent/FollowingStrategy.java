@@ -9,6 +9,7 @@ public class FollowingStrategy implements Strategy {
 	private int pathPosition;
 	
 	public FollowingStrategy(int[][] tiles) {
+		assert(tiles.length > 1 && tiles[0].length > 1); // world must be larger than 1*1
 		this.tiles = tiles;
 		pathPosition = 0;
 	}

@@ -20,11 +20,9 @@ public abstract class CreatureEntity extends Entity {
 
 	protected int health;
 	protected float speed;
-	//protected World world;
 
 	public CreatureEntity(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		//world = w;
 		health = DEFAULT_HEALH;
 		speed = DEFAULT_SPEED;
 
