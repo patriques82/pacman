@@ -2,7 +2,6 @@ package com.game.pacman.world.enteties.creatures;
 
 import java.awt.Graphics;
 
-import com.game.pacman.input.KeyManager;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
@@ -21,11 +20,9 @@ public class Monster extends CreatureEntity {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
 		player = p;
-		agent = new Agent(w.getTiles(), new FollowingStrategy());
+		agent = new Agent(new FollowingStrategy(w.getTiles()));
 		animation = new Animation(500, Assets.monsterUp);
 	}
-	
-	
 	
 	public void setAnimation(Direction dir) {
 		
@@ -56,15 +53,14 @@ public class Monster extends CreatureEntity {
 
 	private void getInput() {
 		agent.computeDirection(getX(), getY(), player.getX(), player.getY()); // TODO: should be intelligent
-		if(agent.pressUp())
+		if(agent.pressUp(getX(), getY()))
 			setDy(-speed);
-		if(agent.pressDown())
+		if(agent.pressDown(getX(), getY()))
 			setDy(speed);
-		if(agent.pressLeft())
+		if(agent.pressLeft(getX(), getY()))
 			setDx(-speed);
-		if(agent.pressRight())
+		if(agent.pressRight(getX(), getY()))
 			setDx(speed);
-		
 	}
 
 

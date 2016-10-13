@@ -1,31 +1,45 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+
 public class FollowingStrategy implements Strategy {
 	
+	private int[] path = {10, 11, 12, 16, 20};
+	private int[][] tiles;
+	private int pathPosition;
+	
+	public FollowingStrategy(int[][] tiles) {
+		this.tiles = tiles;
+		pathPosition = 0;
+	}
 
 	@Override
-	public void findPath() {
-		// TODO Auto-generated method stub
+	public void findPath(float startX, float startY, float destX, float destY) {
+		if(pathPosition == path.length-1) {
+			// Astar.calculatePath(matrix, startX, startY, destX, destY);
+			pathPosition = 0;
+		}
 	}
 
-	// Set dx, dy
-	private void setDirection() {
-		/*
-		float px = handler.getPlayer().getX();
-		float py = handler.getPlayer().getY();
-		Movement xMove = getMovement(px, getX());
-		Movement yMove = getMovement(py, getY());
-		if(xMove == Movement.FORWARD)
-			setDx(speed);
-		if(xMove == Movement.REVERSE)
-			setDx(-speed);
-		if(yMove == Movement.FORWARD)
-			setDy(speed);
-		if(yMove == Movement.REVERSE)
-			setDy(-speed);
-		*/
+	@Override
+	public int getXDir(float currentX) {
+		int cell = path[pathPosition];
+		float destX = getXCoord(cell);
+		return (destX > currentX) ? 1 : ((destX < currentX) ? -1 : 0);   
 	}
-	
 
+	private float getXCoord(int cell) {
+		return (cell % tiles[0].length) - 1;
+	}
+
+	@Override
+	public int getYDir(float currentY) {
+		int cell = path[pathPosition];
+		float destY = getYCoord(cell);
+		return (destY > currentY) ? 1 : ((destY < currentY) ? -1 : 0);   
+	}
+
+	private float getYCoord(int cell) {
+		return cell / tiles[0].length;
+	}
 
 }
