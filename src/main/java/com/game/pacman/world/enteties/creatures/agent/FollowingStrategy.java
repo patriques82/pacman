@@ -1,5 +1,6 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
 
 public class FollowingStrategy implements Strategy {
 	
@@ -15,7 +16,7 @@ public class FollowingStrategy implements Strategy {
 	@Override
 	public void findPath(float startX, float startY, float destX, float destY) {
 		if(pathPosition == path.length-1) {
-			// Astar.calculatePath(matrix, startX, startY, destX, destY);
+			path = Astar.calculatePath(tiles, startX, startY, destX, destY);
 			pathPosition = 0;
 		}
 	}

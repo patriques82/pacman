@@ -40,7 +40,7 @@ public class World extends Observable {
 
 		entityMngr = new EntityManager(); 
 		// Player
-		Player player = new Player(startX, startY, this);
+		Player player = new Player(startX, startY, this); // 23, 23
 		entityMngr.setPlayer(player);
 		// hard coded test
 		Monster monster = new Monster(16, 18, this, player);
