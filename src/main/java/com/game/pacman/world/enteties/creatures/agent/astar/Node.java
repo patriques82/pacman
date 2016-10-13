@@ -5,7 +5,7 @@ public class Node {
 	int hCost;
 	int gCost;
 
-	public Node(float startX, float startY, int i) {
+	public Node(int id, int x, int y, int distance) {
 
 	}
 

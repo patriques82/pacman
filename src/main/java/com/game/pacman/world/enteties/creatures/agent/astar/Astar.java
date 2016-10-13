@@ -25,12 +25,11 @@ public class Astar {
 	 * @return path The indices of the cells (vectorized) in ordered form that represents the shortest path from start to destination
 	 */
 	public static int[] calculatePath(int[][] matrix, float startX, float startY, float destX, float destY) {
-		int heigth = matrix.length;
-		int width = matrix[0].length;
-		Node startNode = new Node(startX, startY, 0); 
-		Node destNode = new Node(destX, destY, -1);
 
-		graph = makeGraph(matrix, heigth, width);
+		graph = makeGraph(matrix, (int) destX, (int) destY);
+		Node startNode = graph[(int) startY][(int) startX];
+		Node destNode = graph[(int) destY][(int) destX];
+
 		openList = new LinkedList<>();
 		closedList = new LinkedList<>();
 		closedList.add(startNode);
@@ -49,30 +48,33 @@ public class Astar {
 				break;
 			}
 		}
-		
-//		int startCellId = ((int) startY * width) + (int) startX;
-//		int destCellId = ((int) destY * width) + (int) destX;
 
 		return getPath(graph, startNode, destNode);
 	}
 
 
-	private static Node[][] makeGraph(int[][] matrix, int heigth, int width) {
-//	private static int[][] computeManhattanDistances(int[][] matrix, int heigth, int width, float destX, float destY) {
-//		int[][] manhattanDistances = new int[heigth][width];
-//		for(int y=0; y<heigth; y++) {
-//			for(int x=0; x<width; x++) {
-//				if(matrix[y][x] == 0) { // empty tile possible to reach
-//					manhattanDistances[y][x] = Math.abs(((int) destX) - x) + Math.abs(((int) destY) - y);
-//				} else {
-//					manhattanDistances[y][x] = -1;
-// 				}
-//			}
-//		}
-//		return manhattanDistances;
-//	}
+	private static Node[][] makeGraph(int[][] matrix, int destX, int destY) {
+		int heigth = matrix.length;
+		int width = matrix[0].length;
+		Node[][] manhattanDistances = new Node[heigth][width];
+		for(int y=0; y<heigth; y++) {
+			for(int x=0; x<width; x++) {
+				if(matrix[y][x] == 0) { // empty tile possible to reach
+					int distance = getDistance(x, y, destX, destY); 
+					int id = (y * heigth) + x;
+					manhattanDistances[y][x] = new Node(id, x, y, distance);
+				} else { // block tile
+					manhattanDistances[y][x] = null;
+ 				}
+			}
+		}
 		return null;
 	}
+
+	private static int getDistance(int x, int y, int destX, int destY) {
+		return Math.abs(destX - x) + Math.abs(destY - y);
+	}
+
 
 	private static Collection<Node> neighbours(Node next) {
 		return null;
