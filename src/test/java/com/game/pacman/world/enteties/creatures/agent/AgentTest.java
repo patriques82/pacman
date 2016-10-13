@@ -1,4 +1,4 @@
-package com.game.pacman.world.enteties.creatures.strategy;
+package com.game.pacman.world.enteties.creatures.agent;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
