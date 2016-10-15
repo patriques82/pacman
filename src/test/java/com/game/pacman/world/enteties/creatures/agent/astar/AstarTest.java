@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
-
 			
-
 public class AstarTest {
 
 	final int[][] matrix = {
@@ -43,8 +40,8 @@ public class AstarTest {
 
 	@Test
 	public void testCalculatePath() {
-		Stack<Integer> actualPath = astar.calculatePath(startX, startY, destX, destY);
-		List<Integer> expectedPath = Arrays.asList(20, 16, 12, 11, 10, 6);
+		List<Integer> actualPath = astar.calculatePath(startX, startY, destX, destY);
+		List<Integer> expectedPath = Arrays.asList(6, 10, 11, 12, 16, 20);
 		assertThat(actualPath, is(expectedPath));
 	}
 
@@ -151,8 +148,8 @@ public class AstarTest {
 		node_6.setId(20);
 		node_6.setParent(node_5);
 
-		Stack<Integer> actualPath = astar.getPath(node_6);
-		List<Integer> expectedPath = Arrays.asList(20, 16, 12, 11, 10, 6);
+		List<Integer> actualPath = astar.getPath(node_6);
+		List<Integer> expectedPath = Arrays.asList(6, 10, 11, 12, 16, 20);
 		assertThat(actualPath, is(expectedPath));
 	}
 

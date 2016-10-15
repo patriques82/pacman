@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.game.pacman.world.enteties.creatures.agent.Agent;
-import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
 
 public class AgentTest {
 
@@ -20,7 +19,7 @@ public class AgentTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		agent = new Agent(new FollowingStrategy(tiles));
+		agent = null; //new Agent(new FollowingStrategy(tiles));
 	}
 
 	@Test

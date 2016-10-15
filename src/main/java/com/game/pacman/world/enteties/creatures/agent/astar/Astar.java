@@ -1,5 +1,6 @@
 package com.game.pacman.world.enteties.creatures.agent.astar;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,9 +16,18 @@ public class Astar {
 	private int width;
 	
 	public Astar(int[][] matrix) {
+		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
 		graph = makeNodeMatrix(matrix);
+	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return heigth;
 	}
 
 	/**
@@ -29,7 +39,7 @@ public class Astar {
 	 * @param destY
 	 * @return path The indices of the cells (vectorized) in ordered form that represents the shortest path from start to destination
 	 */
-	public Stack<Integer> calculatePath(float startX, float startY, float destX, float destY) {
+	public List<Integer> calculatePath(float startX, float startY, float destX, float destY) {
 		calculateDistanceAndId((int) destY, (int) destX);
 		Node startNode = graph[(int) startY][(int) startX];
 		Node destNode = graph[(int) destY][(int) destX];
@@ -121,13 +131,17 @@ public class Astar {
 		}
 	}
 
-	Stack<Integer> getPath(Node destNode) {
-		Stack<Integer> path = new Stack<>();
+	List<Integer> getPath(Node destNode) {
+		Stack<Integer> stack = new Stack<>();
 		Node currentNode = destNode;
 		while(currentNode != null) { // reached start
-			path.add(currentNode.getId());
+			stack.push(currentNode.getId());
 			currentNode = currentNode.getParent();
 		}
+		List<Integer> path = new ArrayList<>(stack.size());
+		int i = 0;
+		while(!stack.isEmpty())
+			path.add(i++, stack.pop());
 		return path;
 	}
 	
