@@ -1,30 +1,34 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import java.util.List;
+
 import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
 
 public class FollowingStrategy implements Strategy {
 	
-	private int[] path = {10, 11, 12, 16, 20};
+	private Astar astar;
+	private List<Integer> path;
 	private int[][] tiles;
 	private int pathPosition;
 	
 	public FollowingStrategy(int[][] tiles) {
 		assert(tiles.length > 1 && tiles[0].length > 1); // world must be larger than 1*1
+		astar = new Astar(tiles);
 		this.tiles = tiles;
 		pathPosition = 0;
 	}
 
 	@Override
-	public void findPath(float startX, float startY, float destX, float destY) {
-		if(pathPosition == path.length-1) {
-			path = Astar.calculatePath(tiles, startX, startY, destX, destY);
-			pathPosition = 0;
+	public void findPath(float currentX, float currentY, float playerX, float playerY) {
+		pathPosition = pathPosition % path.size();
+		if(pathPosition == 0) {
+			path = astar.calculatePath(currentX, currentY, playerX, playerY);
 		}
 	}
 
 	@Override
 	public int getXDir(float currentX) {
-		int cell = path[pathPosition];
+		int cell = path.get(pathPosition);
 		float destX = getXCoord(cell);
 		return (destX > currentX) ? 1 : ((destX < currentX) ? -1 : 0);   
 	}
@@ -35,7 +39,7 @@ public class FollowingStrategy implements Strategy {
 
 	@Override
 	public int getYDir(float currentY) {
-		int cell = path[pathPosition];
+		int cell = path.get(pathPosition);
 		float destY = getYCoord(cell);
 		return (destY > currentY) ? 1 : ((destY < currentY) ? -1 : 0);   
 	}

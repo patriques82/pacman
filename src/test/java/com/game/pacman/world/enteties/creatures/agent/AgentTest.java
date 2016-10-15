@@ -42,7 +42,6 @@ public class AgentTest {
 		assertFalse(agent.pressLeft(startY, startY));
 		assertTrue(agent.pressRight(startY, startY));
 		assertFalse(agent.pressDown(startY, startY));
-
 	}
 
 }

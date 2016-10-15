@@ -1,19 +1,24 @@
 package com.game.pacman.world.enteties.creatures.agent.astar;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 public class Astar {
 
-//	private static int[][] manhattanDistances;  // h value
-//	private static int[][] movementCosts; // g value
-//	private static int[][] fCosts; // movement cost + manhattanDistance
+	private Node[][] graph;
 
-	private static Node[][] graph;
-	private static List<Node> openList;
-	private static List<Node> closedList;
+	private int heigth;
+	private int width;
+	
+	public Astar(int[][] matrix) {
+		heigth = matrix.length;
+		width = matrix[0].length;
+		graph = makeNodeMatrix(matrix);
+	}
 
 	/**
 	 *  
@@ -24,69 +29,110 @@ public class Astar {
 	 * @param destY
 	 * @return path The indices of the cells (vectorized) in ordered form that represents the shortest path from start to destination
 	 */
-	public static int[] calculatePath(int[][] matrix, float startX, float startY, float destX, float destY) {
-
-		graph = makeGraph(matrix, (int) destX, (int) destY);
+	public Stack<Integer> calculatePath(float startX, float startY, float destX, float destY) {
+		calculateDistanceAndId((int) destY, (int) destX);
 		Node startNode = graph[(int) startY][(int) startX];
 		Node destNode = graph[(int) destY][(int) destX];
-
-		openList = new LinkedList<>();
-		closedList = new LinkedList<>();
-		closedList.add(startNode);
-		Iterator<Node> closedIterator = closedList.iterator();
-
-		Collection<Node> neighbours;
+		Node current = startNode;
+		Set<Node> neighbors;
+		List<Node> openList = new LinkedList<>();
+		Set<Node> closedList = new HashSet<>();
 		while(true) {
-			Node next = closedIterator.next();
-			neighbours = neighbours(next);
-
-			if(!neighbours.contains(destNode)) {
-				openList.addAll(neighbours);
-				Node cheapest = popCheapestNode(openList);
-				closedList.add(cheapest);
-			} else {
+			closedList.add(current);
+			neighbors = getNeighbors(current);
+			neighbors.removeAll(closedList);
+			if(neighbors.contains(destNode)) {
+				destNode.setParent(current);
 				break;
+			} else {
+				for(Node n : neighbors) {
+					if(n.getParent() == null || current.getMovementCost() + 1 < n.getMovementCost())
+						n.setParent(current);
+				}
+				openList.addAll(neighbors);
+				current = removeCheapestNode(openList);
 			}
 		}
-
-		return getPath(graph, startNode, destNode);
+		return getPath(destNode);
 	}
 
+	Node removeCheapestNode(List<Node> openList) {
+		if(!openList.isEmpty()) {
+			int cheapest = 0;
+			for(int i=0; i<openList.size(); i++) {
+				if(openList.get(i).getFCost() < openList.get(cheapest).getFCost()) {
+					cheapest = i;
+				}
+			}
+			return openList.remove(cheapest);
+		} else {
+			return null;
+		}
+	}
 
-	private static Node[][] makeGraph(int[][] matrix, int destX, int destY) {
-		int heigth = matrix.length;
-		int width = matrix[0].length;
-		Node[][] manhattanDistances = new Node[heigth][width];
+	Node[][] makeNodeMatrix(int[][] matrix) {
+		Node[][] nodeMatrix = new Node[heigth][width];
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
 				if(matrix[y][x] == 0) { // empty tile possible to reach
-					int distance = getDistance(x, y, destX, destY); 
-					int id = (y * heigth) + x;
-					manhattanDistances[y][x] = new Node(id, x, y, distance);
+					nodeMatrix[y][x] = new Node(y, x);
 				} else { // block tile
-					manhattanDistances[y][x] = null;
+					nodeMatrix[y][x] = null;
  				}
 			}
 		}
-		return null;
+		return nodeMatrix;
+	}
+	
+	void calculateDistanceAndId(int destY, int destX) {
+		for(int y=0; y<heigth; y++) {
+			for(int x=0; x<width; x++) {
+				if(graph[y][x] != null) { // empty tile possible to reach
+					Node n = graph[y][x];
+					n.setDistance(Math.abs(destX - x) + Math.abs(destY - y));
+					n.setId((y * width) + x + 1);
+				}
+			}
+		}
 	}
 
-	private static int getDistance(int x, int y, int destX, int destY) {
-		return Math.abs(destX - x) + Math.abs(destY - y);
+	Set<Node> getNeighbors(final Node node) {
+		Set<Node> neighbours = new HashSet<>();
+		if(node.getY() > 0 && graph[node.getY()-1][node.getX()] != null)
+			neighbours.add(graph[node.getY()-1][node.getX()]);
+		if(node.getX() > 0 && graph[node.getY()][node.getX()-1] != null)
+			neighbours.add(graph[node.getY()][node.getX()-1]);
+		if(node.getX() < width-1 && graph[node.getY()][node.getX()+1] != null)
+			neighbours.add(graph[node.getY()][node.getX()+1]);
+		if(node.getY() < heigth-1 && graph[node.getY()+1][node.getX()] != null)
+			neighbours.add(graph[node.getY()+1][node.getX()]);
+		return neighbours;
 	}
 
-
-	private static Collection<Node> neighbours(Node next) {
-		return null;
+	void setNodeToParent(Node parent, Collection<Node> neighbours) {
+		for(Node n : neighbours) {
+			n.setParent(parent);
+		}
 	}
 
-	private static Node popCheapestNode(List<Node> openList) {
-		return null;
+	void calculateMovementCosts(int currentCost, Collection<Node> neighbours) {
+		for(Node n : neighbours) {
+			n.setMovementCost(currentCost + 1);
+		}
 	}
 
-	private static int[] getPath(Node[][] graph, Node startNode, Node destNode) {
-		return null;
+	Stack<Integer> getPath(Node destNode) {
+		Stack<Integer> path = new Stack<>();
+		Node currentNode = destNode;
+		while(currentNode != null) { // reached start
+			path.add(currentNode.getId());
+			currentNode = currentNode.getParent();
+		}
+		return path;
 	}
-
+	
+	Node get(int y, int x) {
+		return graph[y][x];
+	}
 
 }
