@@ -11,7 +11,7 @@ public class FollowingStrategy implements Strategy {
 	private int pathPosition;
 	private int width;
 
-	private Integer nextCell;
+	private int nextCell;
 	private int nextX;
 	private int nextY;
 	
