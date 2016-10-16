@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
-import com.game.pacman.world.enteties.creatures.agent.RandomStrategy;
 import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
@@ -22,8 +21,8 @@ public class Monster extends CreatureEntity {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
 		player = p;
-//		agent = new Agent(new FollowingStrategy(new Astar(w.getTiles())));
-		agent = new Agent(new RandomStrategy());
+		agent = new Agent(new FollowingStrategy(new Astar(w.getTiles())));
+//		agent = new Agent(new RandomStrategy());
 		animation = new Animation(500, Assets.monsterUp);
 	}
 	
@@ -65,8 +64,6 @@ public class Monster extends CreatureEntity {
 		if(agent.pressRight(getX(), getY()))
 			setDx(speed);
 	}
-
-
 
 	@Override
 	public void render(Graphics g) {

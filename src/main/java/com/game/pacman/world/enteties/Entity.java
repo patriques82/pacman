@@ -14,6 +14,8 @@ public abstract class Entity {
 	public Entity(int x, int y, int w, int h) {
 		this.x = x * Tile.TILESIZE;
 		this.y = y * Tile.TILESIZE;
+//		this.x = x;
+//		this.y = y;
 		width = w * Tile.TILESIZE;
 		height = h * Tile.TILESIZE;
 		bounds = new Rectangle(0, 0, width, height); // default bounds is same size as entity
@@ -25,18 +27,18 @@ public abstract class Entity {
 	public float getX() {
 		return x;
 	}
-
-	public void setX(float x) {
-		this.x = x;
-	}
-
+//
+//	public void setX(float x) {
+//		this.x = x;
+//	}
+//
 	public float getY() {
 		return y;
 	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
+//
+//	public void setY(float y) {
+//		this.y = y;
+//	}
 
 	public int getWidth() {
 		return width;
