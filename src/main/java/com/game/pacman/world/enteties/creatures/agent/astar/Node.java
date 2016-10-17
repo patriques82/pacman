@@ -8,8 +8,8 @@ public class Node {
 	private int fValue;
 
 	public Node(int y, int x) {
-		this.setX(x);
 		this.setY(y);
+		this.setX(x);
 		this.setMovementCost(0);
 		this.fValue = 0;
 	}

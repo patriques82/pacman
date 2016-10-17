@@ -91,7 +91,7 @@ public class World extends Observable {
 	 */
 	public Tile getTile(int x, int y) {
 		if(x >= 0 && x < width && y >= 0 && y < height) {
-			Tile tile = TILE_TYPES[tiles[x][y]];
+			Tile tile = TILE_TYPES[tiles[y][x]];
 			if(tile == null)
 				return EMPTY;
 			return tile;
@@ -116,7 +116,7 @@ public class World extends Observable {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int type = parseInt(tokens[(x + (y * width)) + 4]);
-				tiles[x][y] = type;
+				tiles[y][x] = type;
 				// TODO:
 //				if(type == 3)
 //					createMonster at  x, y

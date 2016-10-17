@@ -7,23 +7,23 @@ public class Agent {
 		this.strategy = strategy;
 	}
 	
-	public void computeDirection(float startX, float startY, float destX, float destY) {
+	public void computeDirection(int startX, int startY, int destX, int destY) {
 		strategy.findPath(startX, startY, destX, destY);
 	}
 	
-	public boolean pressUp(float x, float y) {
+	public boolean pressUp(int x, int y) {
 		return strategy.getYDir(y) == -1;
 	}
 
-	public boolean pressDown(float x, float y) {
+	public boolean pressDown(int x, int y) {
 		return strategy.getYDir(y) == 1;
 	}
 
-	public boolean pressLeft(float x, float y) {
+	public boolean pressLeft(int x, int y) {
 		return strategy.getXDir(x) == -1;
 	}
 
-	public boolean pressRight(float x, float y) {
+	public boolean pressRight(int x, int y) {
 		return strategy.getXDir(x) == 1;
 	}
 

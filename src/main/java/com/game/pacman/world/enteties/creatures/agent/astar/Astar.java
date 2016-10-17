@@ -20,6 +20,7 @@ public class Astar {
 		heigth = matrix.length;
 		width = matrix[0].length;
 		graph = makeNodeMatrix(matrix);
+		printMatrix();
 	}
 
 	public int getWidth() {
@@ -39,10 +40,10 @@ public class Astar {
 	 * @param destY
 	 * @return path The indices of the cells (vectorized) in ordered form that represents the shortest path from start to destination
 	 */
-	public List<Integer> calculatePath(float startX, float startY, float destX, float destY) {
-		calculateDistanceAndId((int) destY, (int) destX);
-		Node startNode = graph[(int) startY][(int) startX];
-		Node destNode = graph[(int) destY][(int) destX];
+	public List<Integer> calculatePath(int startX, int startY, int destX, int destY) {
+		calculateDistanceAndId(destY, destX);
+		Node startNode = graph[startY][startX];
+		Node destNode = graph[destY][destX];
 		Node current = startNode;
 		Set<Node> neighbors;
 		List<Node> openList = new LinkedList<>();
@@ -92,6 +93,21 @@ public class Astar {
 			}
 		}
 		return nodeMatrix;
+	}
+	
+	
+	void printMatrix() {
+		System.out.println("");
+		for(int y=0; y<heigth; y++) {
+			for(int x=0; x<width; x++) {
+				if(graph[y][x] == null) { // empty tile possible to reach
+					System.out.print("1 ");
+				} else {
+					System.out.print("0 ");
+				}
+			}
+			System.out.println("");
+		}
 	}
 	
 	void calculateDistanceAndId(int destY, int destX) {

@@ -20,13 +20,9 @@ public class AstarTest {
 		{0,0,1,0}, // start in (1,1)
 		{0,0,0,0},
 		{1,0,1,0},
-		{0,0,1,0} // goal in (4,3)
+		{0,0,1,0} // goal in (3,4)
 	};
 	Astar astar; 
-	final float startX = 1.0f;
-	final float startY = 1.0f;
-	final float destX = 3.0f;
-	final float destY = 4.0f;
 
 	@Before
 	public void setUp() throws Exception {
@@ -39,9 +35,31 @@ public class AstarTest {
 	}
 
 	@Test
-	public void testCalculatePath() {
-		List<Integer> actualPath = astar.calculatePath(startX, startY, destX, destY);
+	public void testCalculatePath_1() {
+		// (1,1) -> (3,4)
+		List<Integer> actualPath = astar.calculatePath(1, 1, 3, 4);
 		List<Integer> expectedPath = Arrays.asList(6, 10, 11, 12, 16, 20);
+		assertThat(actualPath, is(expectedPath));
+	}
+
+	public void testCalculatePath_2() {
+		// (0,4) -> (0,2)
+		List<Integer> actualPath = astar.calculatePath(0, 4, 0, 2);
+		List<Integer> expectedPath = Arrays.asList(17, 18, 14, 10, 9);
+		assertThat(actualPath, is(expectedPath));
+	}
+
+	public void testCalculatePath_3() {
+		// (1,0) -> (1,4)
+		List<Integer> actualPath = astar.calculatePath(1, 0, 1, 4);
+		List<Integer> expectedPath = Arrays.asList(2, 6, 10, 14, 18);
+		assertThat(actualPath, is(expectedPath));
+	}
+
+	public void testCalculatePath_4() {
+		// (0,2) -> (3,2)
+		List<Integer> actualPath = astar.calculatePath(0, 2, 3, 2);
+		List<Integer> expectedPath = Arrays.asList(9, 10, 11, 12);
 		assertThat(actualPath, is(expectedPath));
 	}
 

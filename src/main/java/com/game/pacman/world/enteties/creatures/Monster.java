@@ -54,20 +54,22 @@ public class Monster extends CreatureEntity {
 
 
 	private void getInput() {
-		agent.computeDirection(getX(), getY(), player.getX(), player.getY()); // TODO: should be intelligent
-		if(agent.pressUp(getX(), getY()))
+		int x = (int) (getX()/Tile.TILESIZE);
+		int y = (int) (getY()/Tile.TILESIZE);
+		agent.computeDirection(x, y, (int) player.getX()/Tile.TILESIZE, (int) player.getY()/Tile.TILESIZE);
+		if(agent.pressUp(x, y))
 			setDy(-speed);
-		if(agent.pressDown(getX(), getY()))
+		if(agent.pressDown(x, y))
 			setDy(speed);
-		if(agent.pressLeft(getX(), getY()))
+		if(agent.pressLeft(x, y))
 			setDx(-speed);
-		if(agent.pressRight(getX(), getY()))
+		if(agent.pressRight(x, y))
 			setDx(speed);
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(animation.currentFrame(), (int) x, (int) y, Tile.TILESIZE, Tile.TILESIZE, null);
+		g.drawImage(animation.currentFrame(), (int) getX(), (int) getY(), Tile.TILESIZE, Tile.TILESIZE, null);
 //		g.fillRect((int) (bounds.x + x),(int) (bounds.y + y), bounds.width, bounds.height);
 	}
 

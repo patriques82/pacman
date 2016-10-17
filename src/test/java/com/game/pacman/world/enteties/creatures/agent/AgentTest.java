@@ -25,18 +25,18 @@ public class AgentTest {
 	@Test
 	public void test() {
 		// step 1
-		float startX = 0.0f;
-		float startY = 1.0f;
-		agent.computeDirection(startX, startY, 3.0f, 4.0f);
+		int startX = 0;
+		int startY = 1;
+		agent.computeDirection(startX, startY, 3, 4);
 		assertFalse(agent.pressUp(startX, startY));
 		assertFalse(agent.pressLeft(startY, startY));
 		assertTrue(agent.pressRight(startY, startY));
 		assertFalse(agent.pressDown(startY, startY));
 
 		// step 2
-		startX = 1.0f;
-		startY = 3.3f;
-		agent.computeDirection(startX, startY, 3.0f, 4.0f); // walk diagonal (north-east)
+		startX = 1;
+		startY = 3;
+		agent.computeDirection(startX, startY, 3, 4); // walk diagonal (north-east)
 		assertTrue(agent.pressUp(startY, startY));
 		assertFalse(agent.pressLeft(startY, startY));
 		assertTrue(agent.pressRight(startY, startY));

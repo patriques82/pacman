@@ -2,10 +2,11 @@ package com.game.pacman.world.enteties.creatures.agent;
 
 public interface Strategy {
 
-	public void findPath(float startX, float startY, float destX, float destY);
+	public void findPath(int currentX, int currentY, int playerX, int playerY);
 
-	public int getYDir(float currentY);
+	public int getYDir(int currentY);
 
-	public int getXDir(float currentX);
+	public int getXDir(int currentX);
+
 
 }

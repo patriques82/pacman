@@ -3,10 +3,8 @@ package com.game.pacman.world.enteties.creatures.agent;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
-import com.game.pacman.world.tiles.Tile;
 
 public class FollowingStrategy implements Strategy {
 	
@@ -15,65 +13,59 @@ public class FollowingStrategy implements Strategy {
 	private int pathPosition;
 	private int width;
 
-	private int nextCell;
-	private int nextX;
-	private int nextY;
+	private int targetCell;
+	private int targetX;
+	private int targetY;
 	
 	private final static int PoolSize = 4;
 	private final static ExecutorService Pool = Executors.newFixedThreadPool(PoolSize);
-	private final AtomicBoolean calculatingPath;
+	private boolean processing;
 
 	
 	public FollowingStrategy(Astar astar) {
 		this.astar = astar;
 		width = astar.getWidth();
 		pathPosition = 0;
-		calculatingPath = new AtomicBoolean(false);
+		processing = false;
 	}
 
 	@Override
-	public void findPath(float currentX, float currentY, float playerX, float playerY) {
-//		if(path == null || pathPosition == path.size()) {
-//			path = astar.calculatePath(currentX, currentY, playerX, playerY);
-//			pathPosition = 0;
-//		}
-//		nextCell = path.get(pathPosition);
-//		nextX = getXCoord(nextCell);
-//		nextY = getYCoord(nextCell);
-//		if(nextCell == nextX + (nextY * width) + 1) 
-//			pathPosition++;
-		
-		final float adjustCurrentX = currentX/Tile.TILESIZE;
-		final float adjustCurrentY = currentY/Tile.TILESIZE;
-		final float adjustPlayerX = playerX/Tile.TILESIZE;
-		final float adjustPlayerY = playerY/Tile.TILESIZE;
-		if((path == null || pathPosition == path.size()) && !calculatingPath.get()) {
-			// run in separate thread
-			calculatingPath.set(true);
-			Pool.execute(new Runnable() {
-				public void run() {
-					path = astar.calculatePath(adjustCurrentX, adjustCurrentY, adjustPlayerX, adjustPlayerY);
-					calculatingPath.set(false);
-				}
-			});
-		}
-		if(path != null) {
-			nextCell = path.get(pathPosition);
-			nextX = getXCoord(nextCell);
-			nextY = getYCoord(nextCell);
-			// is currentX and currentY inside cell?
-			if(nextCell == adjustCurrentX + (adjustCurrentY * width) + 1 && !calculatingPath.get()) 
-				pathPosition++;
+	public void findPath(final int currentX, final int currentY, final int playerX, final int playerY) {
+		targetX = currentX; // until path has been calculated
+		targetY = currentY;
+		int currentCell = currentX + (currentY * width) + 1;
+		if(path == null) {
+			path = astar.calculatePath(currentX, currentY, playerX, playerY);
+			System.out.println(path);
+//		if(path == null || !processing) {
+//			Pool.execute(new Runnable() {
+//				public void run() {
+//					processing = true;
+//					path = astar.calculatePath(currentX, currentY, playerX, playerY);
+//					processing = false;
+//				}
+//			});
 		} else {
-			nextX = (int) adjustCurrentX;
-			nextY = (int) adjustCurrentY;
+//			System.out.println("Path: " + path);
+//			System.out.println("Current: " + currentCell);
+//			System.out.println("CurrentX, CurrentY: " + currentX + ", " + currentY);
+//			System.out.println("Target: " + targetCell);
+//			System.out.println("TargetX, TargetY " + targetX + ", " + targetY);
+//			System.out.println("-------------------------------------------\n");
+
+			targetCell = path.get(pathPosition);
+			targetX = getXCoord(targetCell);
+			targetY = getYCoord(targetCell);
+			if(targetCell == currentCell) 
+				pathPosition++;
+			if(pathPosition == path.size()) // reached end
+				path = null;
 		}
 	}
 
 	@Override
-	public int getXDir(float currentX) {
-		currentX /= Tile.TILESIZE;
-		return (nextX > (int) currentX) ? 1 : ((nextX < (int) currentX) ? -1 : 0);   
+	public int getXDir(int currentX) {
+		return (targetX > (int) currentX) ? 1 : ((targetX < (int) currentX) ? -1 : 0);   
 	}
 
 	int getXCoord(int cell) {
@@ -81,9 +73,8 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	@Override
-	public int getYDir(float currentY) {
-		currentY /= Tile.TILESIZE;
-		return (nextY > (int) currentY) ? 1 : ((nextY < (int) currentY) ? -1 : 0);   
+	public int getYDir(int currentY) {
+		return (targetY > (int) currentY) ? 1 : ((targetY < (int) currentY) ? -1 : 0);   
 	}
 
 	int getYCoord(int cell) {
