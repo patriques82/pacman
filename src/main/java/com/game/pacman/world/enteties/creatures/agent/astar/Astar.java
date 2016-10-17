@@ -20,7 +20,7 @@ public class Astar {
 		heigth = matrix.length;
 		width = matrix[0].length;
 		graph = makeNodeMatrix(matrix);
-		printMatrix();
+//		printMatrix();
 	}
 
 	public int getWidth() {
