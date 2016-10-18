@@ -36,8 +36,8 @@ public class FollowingStrateyTest {
 		path.add(16);
 		path.add(20);
 		Mockito.when(mockAstar.calculatePath(1, 1, 3, 4)).thenReturn(path);
-		Mockito.when(mockAstar.getWidth()).thenReturn(4);
-		strategy = new FollowingStrategy(mockAstar);
+//		Mockito.when(mockAstar.getWidth()).thenReturn(4);
+		strategy = new FollowingStrategy(tiles, mockAstar);
 	}
 
 	@After

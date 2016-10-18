@@ -21,7 +21,7 @@ public class Monster extends CreatureEntity {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
 		player = p;
-		agent = new Agent(new FollowingStrategy(new AstarOpt(w.getTiles())));
+		agent = new Agent(new FollowingStrategy(w.getTiles(), new AstarOpt()));
 		animation = new Animation(500, Assets.monsterUp);
 	}
 	

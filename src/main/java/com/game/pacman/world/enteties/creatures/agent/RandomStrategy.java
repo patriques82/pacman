@@ -1,6 +1,6 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
-public class RandomStrategy implements Strategy {
+public class RandomStrategy extends Strategy {
 	
 	private Agent agent;
 	private int lastX, lastXDir;

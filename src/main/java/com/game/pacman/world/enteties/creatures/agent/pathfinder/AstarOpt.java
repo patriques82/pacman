@@ -15,22 +15,13 @@ public class AstarOpt implements PathFinder {
 	private int heigth;
 	private int width;
 	
-	public AstarOpt(int[][] matrix) {
+	public void setMatrix(int[][] matrix) {
 		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
 		array = makeNodeArray(matrix); // uses array to optimize locality
-//		printMatrix();
 	}
 
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return heigth;
-	}
-	
 	private int getId(int y, int x) {
 		return (y * width) + x;
 	}

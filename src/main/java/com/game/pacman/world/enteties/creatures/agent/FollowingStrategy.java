@@ -7,14 +7,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 
-public class FollowingStrategy implements Strategy {
+public class FollowingStrategy extends Strategy {
 	
 	private PathFinder astar;
 	private Agent agent;
 
 	private List<Integer> path;
 	private int pathPosition;
-	private int width;
 
 	private int targetCell;
 	private int targetX;
@@ -23,9 +22,10 @@ public class FollowingStrategy implements Strategy {
 	private AtomicBoolean processing;
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(4);
 
-	public FollowingStrategy(PathFinder astar) {
+	public FollowingStrategy(final int[][] matrix, PathFinder astar) {
+		super.setMatrix(matrix);
 		this.astar = astar;
-		width = astar.getWidth();
+		this.astar.setMatrix(matrix);
 		pathPosition = 0;
 		processing = new AtomicBoolean(false);
 	}
@@ -34,7 +34,7 @@ public class FollowingStrategy implements Strategy {
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		targetX = currentX; // until path has been calculated
 		targetY = currentY;
-		int currentCell = currentX + (currentY * width) + 1;
+		int currentCell = currentX + (currentY * super.width) + 1;
 		if(getPath() == null && !processing.get()) {
 			processParallel(currentX, currentY, playerX, playerY);
 		} else {
@@ -48,6 +48,7 @@ public class FollowingStrategy implements Strategy {
 				pathPosition = 0;
 				if(getPath() != null) // reached end
 					agent.setStrategy(new RandomStrategy());
+//					agent.setStrategy(new BreadCrumbsStrategy(matrix));
 			}
 		}
 	}
@@ -82,7 +83,7 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	int getXCoord(int cell) {
-		return (cell-1) % width;
+		return (cell-1) % super.width;
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	int getYCoord(int cell) {
-		return (cell-1) / width;
+		return (cell-1) / super.width;
 	}
 
 	@Override

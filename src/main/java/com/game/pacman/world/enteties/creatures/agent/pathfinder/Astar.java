@@ -16,19 +16,18 @@ public class Astar implements PathFinder {
 	private int width;
 	
 	public Astar(int[][] matrix) {
+		setMatrix(matrix);
+//		printMatrix();
+	}
+	
+	public Astar() { }
+
+	@Override
+	public void setMatrix(int[][] matrix) {
 		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
 		graph = makeNodeMatrix(matrix);
-//		printMatrix();
-	}
-
-	public int getWidth() {
-		return width;
-	}
-	
-	public int getHeight() {
-		return heigth;
 	}
 
 	/**
@@ -164,5 +163,6 @@ public class Astar implements PathFinder {
 	Node get(int y, int x) {
 		return graph[y][x];
 	}
+
 
 }

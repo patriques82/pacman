@@ -5,11 +5,11 @@ public class Agent {
 	
 	public Agent(Strategy strategy) {
 		setStrategy(strategy);
-		strategy.setAgent(this);
 	}
 	
 	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;
+		this.strategy.setAgent(this);
 	}
 	
 	public void computeDirection(int startX, int startY, int destX, int destY) {
