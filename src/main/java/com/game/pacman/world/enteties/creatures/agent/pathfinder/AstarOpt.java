@@ -1,4 +1,4 @@
-package com.game.pacman.world.enteties.creatures.agent.astar;
+package com.game.pacman.world.enteties.creatures.agent.pathfinder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,19 +8,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-public class Astar {
+public class AstarOpt implements PathFinder {
 
-	private Node[][] graph;
+	private static Node[] array;
 
 	private int heigth;
 	private int width;
 	
-	public Astar(int[][] matrix) {
+	public AstarOpt(int[][] matrix) {
 		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
-		graph = makeNodeMatrix(matrix);
-//		printMatrix();
+		array = makeNodeArray(matrix); // uses array to optimize locality
+		printMatrix();
 	}
 
 	public int getWidth() {
@@ -29,6 +29,10 @@ public class Astar {
 	
 	public int getHeight() {
 		return heigth;
+	}
+	
+	private int getId(int y, int x) {
+		return (y * width) + x;
 	}
 
 	/**
@@ -42,9 +46,8 @@ public class Astar {
 	 */
 	public List<Integer> calculatePath(int startX, int startY, int destX, int destY) {
 		calculateDistanceAndId(destY, destX);
-		Node startNode = graph[startY][startX];
-		Node destNode = graph[destY][destX];
-		Node current = startNode;
+		Node current = array[getId(startY, startX)];
+		Node destNode = array[getId(destY, destX)];
 		Set<Node> neighbors;
 		List<Node> openList = new LinkedList<>();
 		Set<Node> closedList = new HashSet<>();
@@ -81,18 +84,18 @@ public class Astar {
 		}
 	}
 
-	Node[][] makeNodeMatrix(int[][] matrix) {
-		Node[][] nodeMatrix = new Node[heigth][width];
+	Node[] makeNodeArray(int[][] matrix) {
+		Node[] nodeArray = new Node[heigth * width];
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
 				if(matrix[y][x] == 0) { // empty tile possible to reach
-					nodeMatrix[y][x] = new Node(y, x);
+					nodeArray[getId(y, x)] = new Node(y, x);
 				} else { // block tile
-					nodeMatrix[y][x] = null;
+					nodeArray[getId(y, x)] = null;
  				}
 			}
 		}
-		return nodeMatrix;
+		return nodeArray;
 	}
 	
 	
@@ -100,7 +103,7 @@ public class Astar {
 		System.out.println("");
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
-				if(graph[y][x] == null) { // empty tile possible to reach
+				if(array[getId(y, x)] == null) { // empty tile possible to reach
 					System.out.print("1 ");
 				} else {
 					System.out.print("0 ");
@@ -113,10 +116,10 @@ public class Astar {
 	void calculateDistanceAndId(int destY, int destX) {
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
-				if(graph[y][x] != null) { // empty tile possible to reach
-					Node n = graph[y][x];
+				if(array[getId(y, x)] != null) { // empty tile possible to reach
+					Node n = array[getId(y, x)];
 					n.setDistance(Math.abs(destX - x) + Math.abs(destY - y));
-					n.setId((y * width) + x + 1);
+					n.setId(getId(y, x));
 				}
 			}
 		}
@@ -124,14 +127,14 @@ public class Astar {
 
 	Set<Node> getNeighbors(final Node node) {
 		Set<Node> neighbours = new HashSet<>();
-		if(node.getY() > 0 && graph[node.getY()-1][node.getX()] != null)
-			neighbours.add(graph[node.getY()-1][node.getX()]);
-		if(node.getX() > 0 && graph[node.getY()][node.getX()-1] != null)
-			neighbours.add(graph[node.getY()][node.getX()-1]);
-		if(node.getX() < width-1 && graph[node.getY()][node.getX()+1] != null)
-			neighbours.add(graph[node.getY()][node.getX()+1]);
-		if(node.getY() < heigth-1 && graph[node.getY()+1][node.getX()] != null)
-			neighbours.add(graph[node.getY()+1][node.getX()]);
+		if(node.getY() > 0 && array[getId(node.getY()-1, node.getX())] != null)
+			neighbours.add(array[getId(node.getY()-1, node.getX())]);
+		if(node.getX() > 0 && array[getId(node.getY(), node.getX()-1)] != null)
+			neighbours.add(array[getId(node.getY(), node.getX()-1)]);
+		if(node.getX() < width-1 && array[getId(node.getY(), node.getX()+1)] != null)
+			neighbours.add(array[getId(node.getY(), node.getX()+1)]);
+		if(node.getY() < heigth-1 && array[getId(node.getY()+1, node.getX())] != null)
+			neighbours.add(array[getId(node.getY()+1, node.getX())]);
 		return neighbours;
 	}
 
@@ -151,18 +154,19 @@ public class Astar {
 		Stack<Integer> stack = new Stack<>();
 		Node currentNode = destNode;
 		while(currentNode != null) { // reached start
-			stack.push(currentNode.getId());
+			stack.push(currentNode.getId() + 1);
 			currentNode = currentNode.getParent();
 		}
 		List<Integer> path = new ArrayList<>(stack.size());
 		int i = 0;
 		while(!stack.isEmpty())
 			path.add(i++, stack.pop());
+		
 		return path;
 	}
 	
 	Node get(int y, int x) {
-		return graph[y][x];
+		return array[getId(y, x)];
 	}
 
 }

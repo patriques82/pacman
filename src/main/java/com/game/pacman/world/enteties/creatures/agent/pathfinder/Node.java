@@ -1,4 +1,4 @@
-package com.game.pacman.world.enteties.creatures.agent.astar;
+package com.game.pacman.world.enteties.creatures.agent.pathfinder;
 
 public class Node {
 	
@@ -6,6 +6,8 @@ public class Node {
 	private Node parent;
 	private int movementCost;
 	private int fValue;
+	
+//	[y, x, id, distance, parentId, movementCost, fValue]
 
 	public Node(int y, int x) {
 		this.setY(y);

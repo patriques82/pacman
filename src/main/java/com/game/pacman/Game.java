@@ -59,7 +59,7 @@ public class Game implements Runnable {
 	public void run() {
 		init();
 
-		int fps = 60;
+		int fps = 40;
 		double timePerTick = 1000_000_000/fps; // nanoseconds
 		double delta = 0; // threshold for when to stop, rendering correct fps
 		long now;

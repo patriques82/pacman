@@ -12,7 +12,7 @@ import static org.hamcrest.CoreMatchers.*;
 import org.mockito.Mockito;
 
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
-import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
+import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
 
 public class FollowingStrateyTest {
 	

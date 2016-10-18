@@ -1,4 +1,4 @@
-package com.game.pacman.world.enteties.creatures.agent.astar;
+package com.game.pacman.world.enteties.creatures.agent.pathfinder;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,9 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
+import com.game.pacman.world.enteties.creatures.agent.pathfinder.Node;
 
 import static org.hamcrest.CoreMatchers.*;
 			

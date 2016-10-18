@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.game.pacman.world.enteties.creatures.agent.astar.Astar;
+import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 
 public class FollowingStrategy implements Strategy {
 	
-	private Astar astar;
+	private PathFinder astar;
 	private List<Integer> path;
 	private int pathPosition;
 	private int width;
@@ -21,7 +21,7 @@ public class FollowingStrategy implements Strategy {
 	private AtomicBoolean processing;
 	private static ExecutorService threadPool = Executors.newFixedThreadPool(4);
 
-	public FollowingStrategy(Astar astar) {
+	public FollowingStrategy(PathFinder astar) {
 		this.astar = astar;
 		width = astar.getWidth();
 		pathPosition = 0;
@@ -29,19 +29,12 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	@Override
-	public void findPath(final int currentX, final int currentY, final int playerX, final int playerY) {
+	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		targetX = currentX; // until path has been calculated
 		targetY = currentY;
 		int currentCell = currentX + (currentY * width) + 1;
 		if(getPath() == null && !processing.get()) {
-//			System.out.println("Execute!");
-			threadPool.execute(new Runnable() {
-				public void run() {
-					processing.set(true);
-					setPath(astar.calculatePath(currentX, currentY, playerX, playerY));
-					processing.set(false);
-				}
-			});
+			processParallel(currentX, currentY, playerX, playerY);
 		} else {
 //			System.out.println("Path: " + path);
 //			System.out.println("Position: " + pathPosition);
@@ -62,6 +55,22 @@ public class FollowingStrategy implements Strategy {
 					setPath(null);
 			}
 		}
+	}
+	
+	private void processParallel(final int currentX, final int currentY, final int playerX, final int playerY) {
+		threadPool.execute(new Runnable() {
+			public void run() {
+				processing.set(true);
+				setPath(astar.calculatePath(currentX, currentY, playerX, playerY));
+				processing.set(false);
+			}
+		});
+	}
+	
+	private void processSequential(int currentX, int currentY, int playerX, int playerY) {
+		processing.set(true);
+		setPath(astar.calculatePath(currentX, currentY, playerX, playerY));
+		processing.set(false);
 	}
 
 	private void setPath(List<Integer> path) {
