@@ -49,53 +49,53 @@ public class FollowingStrateyTest {
 	public void testFindPath() {
 		strategy.findPath(1, 1, 3, 4);
 		// no movement since monster is in first cell already (1,1)
-		assertThat(strategy.getXDir(1), is(0));
-		assertThat(strategy.getYDir(1), is(0));
+		assertThat(strategy.getXDir(1,1), is(0));
+		assertThat(strategy.getYDir(1,1), is(0));
 
 		strategy.findPath(1, 1, 3, 4);
 		// no movement since monster just calculated path and is now getting the first cell of path (where monster is)
-		assertThat(strategy.getXDir(1), is(0));
-		assertThat(strategy.getYDir(1), is(0));
+		assertThat(strategy.getXDir(1,1), is(0));
+		assertThat(strategy.getYDir(1,1), is(0));
 
 		strategy.findPath(1, 1, 3, 4);
 		// move down since next step is now below monster (1,2)
-		assertThat(strategy.getXDir(1), is(0));
+		assertThat(strategy.getXDir(1,1), is(0));
 //		assertThat(strategy.getYDir(1), is(1));
-		int ydir = strategy.getYDir(1);
+		int ydir = strategy.getYDir(1,1);
 		assertThat(ydir, is(1));
 
 		strategy.findPath(1, 2, 3, 4);
 		// move right (2,2)
-		assertThat(strategy.getXDir(1), is(0));
-		assertThat(strategy.getYDir(2), is(0));
+		assertThat(strategy.getXDir(1,2), is(0));
+		assertThat(strategy.getYDir(1,2), is(0));
 		
 		// remove
 		strategy.findPath(1, 2, 3, 4);
 		// move right (2,2)
-		assertThat(strategy.getXDir(1), is(1));
-		assertThat(strategy.getYDir(2), is(0));
+		assertThat(strategy.getXDir(1,2), is(1));
+		assertThat(strategy.getYDir(1,2), is(0));
 
 		strategy.findPath(2, 2, 3, 4);
 		// move right (3,2)
-		assertThat(strategy.getXDir(2), is(1));
-		assertThat(strategy.getYDir(2), is(0));
+		assertThat(strategy.getXDir(2,2), is(1));
+		assertThat(strategy.getYDir(2,2), is(0));
 
 		strategy.findPath(3, 2, 3, 4);
 		// move down (3,3)
-		assertThat(strategy.getXDir(3), is(0));
-		assertThat(strategy.getYDir(2), is(1));
+		assertThat(strategy.getXDir(3,2), is(0));
+		assertThat(strategy.getYDir(3,2), is(1));
 
 		strategy.findPath(3, 3, 3, 4);
 		// move down (3,4)
-		assertThat(strategy.getXDir(3), is(0));
-		assertThat(strategy.getYDir(4), is(1));
+		assertThat(strategy.getXDir(3,3), is(0));
+		assertThat(strategy.getYDir(3,3), is(1));
 	}
 
 	@Test
 	public void testGetXDir() {
-		assertThat(strategy.getXDir(1), is(-1)); // press left
-		assertThat(strategy.getXDir(-1), is(1)); // press right
-		assertThat(strategy.getXDir(0), is(0)); // no press
+		assertThat(strategy.getXDir(1,0), is(-1)); // press left
+		assertThat(strategy.getXDir(-1,0), is(1)); // press right
+		assertThat(strategy.getXDir(0,0), is(0)); // no press
 	}
 	
 	@Test
@@ -105,9 +105,9 @@ public class FollowingStrateyTest {
 
 	@Test
 	public void testGetYDir() {
-		assertThat(strategy.getYDir(1), is(-1)); // press left
-		assertThat(strategy.getYDir(-1), is(1)); // press right
-		assertThat(strategy.getYDir(0), is(0)); // no press
+		assertThat(strategy.getYDir(0,1), is(-1)); // press left
+		assertThat(strategy.getYDir(0,-1), is(1)); // press right
+		assertThat(strategy.getYDir(0,0), is(0)); // no press
 	}
 
 	@Test

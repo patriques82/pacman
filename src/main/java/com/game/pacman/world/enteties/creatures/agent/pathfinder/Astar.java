@@ -10,7 +10,7 @@ import java.util.Stack;
 
 public class Astar implements PathFinder {
 
-	private static Node[][] graph;
+	private Node[][] graph;
 
 	private int heigth;
 	private int width;

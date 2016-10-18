@@ -20,7 +20,7 @@ public class AstarOpt implements PathFinder {
 		heigth = matrix.length;
 		width = matrix[0].length;
 		array = makeNodeArray(matrix); // uses array to optimize locality
-		printMatrix();
+//		printMatrix();
 	}
 
 	public int getWidth() {

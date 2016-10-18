@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
-import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.AstarOpt;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
@@ -23,7 +22,6 @@ public class Monster extends CreatureEntity {
 		world = w;
 		player = p;
 		agent = new Agent(new FollowingStrategy(new AstarOpt(w.getTiles())));
-//		agent = new Agent(new RandomStrategy());
 		animation = new Animation(500, Assets.monsterUp);
 	}
 	
@@ -58,13 +56,13 @@ public class Monster extends CreatureEntity {
 		int x = (int) (getX()/Tile.TILESIZE);
 		int y = (int) (getY()/Tile.TILESIZE);
 		agent.computeDirection(x, y, (int) player.getX()/Tile.TILESIZE, (int) player.getY()/Tile.TILESIZE);
-		if(agent.pressUp(y))
+		if(agent.pressUp(x,y))
 			setDy(-speed);
-		if(agent.pressDown(y))
+		if(agent.pressDown(x,y))
 			setDy(speed);
-		if(agent.pressLeft(x))
+		if(agent.pressLeft(x,y))
 			setDx(-speed);
-		if(agent.pressRight(x))
+		if(agent.pressRight(x,y))
 			setDx(speed);
 	}
 

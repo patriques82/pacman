@@ -10,6 +10,8 @@ import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 public class FollowingStrategy implements Strategy {
 	
 	private PathFinder astar;
+	private Agent agent;
+
 	private List<Integer> path;
 	private int pathPosition;
 	private int width;
@@ -27,7 +29,7 @@ public class FollowingStrategy implements Strategy {
 		pathPosition = 0;
 		processing = new AtomicBoolean(false);
 	}
-
+	
 	@Override
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		targetX = currentX; // until path has been calculated
@@ -36,13 +38,6 @@ public class FollowingStrategy implements Strategy {
 		if(getPath() == null && !processing.get()) {
 			processParallel(currentX, currentY, playerX, playerY);
 		} else {
-//			System.out.println("Path: " + path);
-//			System.out.println("Position: " + pathPosition);
-//			System.out.println("Current: " + currentCell);
-//			System.out.println("CurrentX, CurrentY: " + currentX + ", " + currentY);
-//			System.out.println("Target: " + targetCell);
-//			System.out.println("TargetX, TargetY " + targetX + ", " + targetY);
-//			System.out.println("-------------------------------------------\n");
 			if(getPath() != null && pathPosition < getPath().size()) {
 				targetCell = getPath().get(pathPosition);
 				targetX = getXCoord(targetCell);
@@ -52,7 +47,7 @@ public class FollowingStrategy implements Strategy {
 			} else {
 				pathPosition = 0;
 				if(getPath() != null) // reached end
-					setPath(null);
+					agent.setStrategy(new RandomStrategy());
 			}
 		}
 	}
@@ -67,11 +62,11 @@ public class FollowingStrategy implements Strategy {
 		});
 	}
 	
-	private void processSequential(int currentX, int currentY, int playerX, int playerY) {
-		processing.set(true);
-		setPath(astar.calculatePath(currentX, currentY, playerX, playerY));
-		processing.set(false);
-	}
+//	private void processSequential(int currentX, int currentY, int playerX, int playerY) {
+//		processing.set(true);
+//		setPath(astar.calculatePath(currentX, currentY, playerX, playerY));
+//		processing.set(false);
+//	}
 
 	private void setPath(List<Integer> path) {
 		this.path = path;
@@ -82,7 +77,7 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	@Override
-	public int getXDir(int currentX) {
+	public int getXDir(int currentX, int currentY) {
 		return (targetX > (int) currentX) ? 1 : ((targetX < (int) currentX) ? -1 : 0);   
 	}
 
@@ -91,12 +86,17 @@ public class FollowingStrategy implements Strategy {
 	}
 
 	@Override
-	public int getYDir(int currentY) {
+	public int getYDir(int currentX, int currentY) {
 		return (targetY > (int) currentY) ? 1 : ((targetY < (int) currentY) ? -1 : 0);   
 	}
 
 	int getYCoord(int cell) {
 		return (cell-1) / width;
+	}
+
+	@Override
+	public void setAgent(Agent agent) {
+		this.agent = agent;
 	}
 
 }

@@ -4,6 +4,11 @@ public class Agent {
 	private Strategy strategy;
 	
 	public Agent(Strategy strategy) {
+		setStrategy(strategy);
+		strategy.setAgent(this);
+	}
+	
+	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;
 	}
 	
@@ -11,20 +16,20 @@ public class Agent {
 		strategy.findPath(startX, startY, destX, destY);
 	}
 	
-	public boolean pressUp(int y) {
-		return strategy.getYDir(y) == -1;
+	public boolean pressUp(int x, int y) {
+		return strategy.getYDir(x,y) == -1;
 	}
 
-	public boolean pressDown(int y) {
-		return strategy.getYDir(y) == 1;
+	public boolean pressDown(int x, int y) {
+		return strategy.getYDir(x,y) == 1;
 	}
 
-	public boolean pressLeft(int x) {
-		return strategy.getXDir(x) == -1;
+	public boolean pressLeft(int x, int y) {
+		return strategy.getXDir(x,y) == -1;
 	}
 
-	public boolean pressRight(int x) {
-		return strategy.getXDir(x) == 1;
+	public boolean pressRight(int x, int y) {
+		return strategy.getXDir(x, y) == 1;
 	}
 
 }
