@@ -1,7 +1,11 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
-public class BreadCrumbsStrategy extends Strategy {
+public class BreadCrumbsStrategy implements Strategy {
 	
+	private int[][] matrix;
+	private int width;
+	private int heigth;
+
 	private Agent agent;
 	private enum Direction {NORTH, SOUTH, EAST, WEST};
 
@@ -9,6 +13,9 @@ public class BreadCrumbsStrategy extends Strategy {
 
 	public BreadCrumbsStrategy(final int[][] matrix) {
 		breadCrumbs = invert(matrix);
+		this.matrix = matrix;
+		heigth = matrix.length;
+		width = matrix[0].length;
 	}
 
 	@Override
@@ -48,9 +55,9 @@ public class BreadCrumbsStrategy extends Strategy {
 		int[] dirs = {0,0,0,0}; //north, south, east, west;
 		if(currentY-1 >= 0)
 			dirs[0] = breadCrumbs[currentY-1][currentX];
-		if(currentY+1 < super.heigth)
+		if(currentY+1 < heigth)
 			dirs[1] = breadCrumbs[currentY+1][currentX];
-		if(currentX+1 < super.width)
+		if(currentX+1 < width)
 			dirs[2] = breadCrumbs[currentY][currentX+1];
 		if(currentX-1 >= 0)
 			dirs[3] = breadCrumbs[currentY][currentX-1];
@@ -82,6 +89,7 @@ public class BreadCrumbsStrategy extends Strategy {
 		}
 		return invertedMatrix;
 	}
+
 
 
 }

@@ -1,15 +1,15 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
 import static org.junit.Assert.*;
-
-import java.util.Stack;
+import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
 import org.mockito.Mockito;
+
+import java.util.Stack;
 
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;

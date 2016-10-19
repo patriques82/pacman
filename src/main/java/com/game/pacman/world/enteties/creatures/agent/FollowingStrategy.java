@@ -4,10 +4,14 @@ import java.util.List;
 
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 
-public class FollowingStrategy extends Strategy {
+public class FollowingStrategy implements Strategy {
 	
 	protected PathFinder astar;
 	protected Agent agent;
+
+	protected int[][] matrix;
+	protected int width;
+	protected int heigth;
 
 	protected List<Integer> path;
 	protected int pathPosition;
@@ -18,30 +22,39 @@ public class FollowingStrategy extends Strategy {
 	
 
 	public FollowingStrategy(final int[][] matrix, PathFinder astar) {
-		super.setMatrix(matrix);
+		setMatrix(matrix);
 		this.astar = astar;
 		pathPosition = 0;
 	}
 	
+	public void setMatrix(final int[][] matrix) {
+		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
+		this.matrix = matrix;
+		this.heigth = matrix.length;
+		this.width = matrix[0].length;
+	}
+
 	@Override
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		targetX = currentX; // until path has been calculated
 		targetY = currentY;
-		int currentCell = currentX + (currentY * super.width) + 1;
+		int currentCell = currentX + (currentY * width) + 1;
 		if(getPath() == null && !astar.isProcessing()) {
 			process(currentX, currentY, playerX, playerY);
 		} else {
 			if(getPath() != null && pathPosition < getPath().size()) {
 				targetCell = getPath().get(pathPosition);
-				if(targetCell == currentCell && pathPosition != getPath().size()-1) {  // get next target from path
-					targetCell = getPath().get(++pathPosition);
+				if(targetCell == currentCell) {  // get next target
+					++pathPosition;
+					if(pathPosition < getPath().size())
+						targetCell = getPath().get(pathPosition);
 				}
 				targetX = getXCoord(targetCell);
 				targetY = getYCoord(targetCell);
 			} else {
 				pathPosition = 0;
 				if(getPath() != null) // reached end => Switch to bread crumb strategy
-					agent.setStrategy(new RandomStrategy());
+					agent.setStrategy(new RandomStrategy(matrix));
 //					agent.setStrategy(new BreadCrumbsStrategy(matrix));
 			}
 		}
@@ -66,7 +79,7 @@ public class FollowingStrategy extends Strategy {
 	}
 
 	int getXCoord(int cell) {
-		return (cell-1) % super.width;
+		return (cell-1) % width;
 	}
 
 	@Override
@@ -75,7 +88,7 @@ public class FollowingStrategy extends Strategy {
 	}
 
 	int getYCoord(int cell) {
-		return (cell-1) / super.width;
+		return (cell-1) / width;
 	}
 
 	@Override

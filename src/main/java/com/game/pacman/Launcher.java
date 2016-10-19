@@ -6,4 +6,5 @@ public class Launcher {
 		Game pacman = new Game("Pacman", 690, 690);
 		pacman.start();
 	}
+
 }
