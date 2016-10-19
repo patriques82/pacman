@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AstarOpt implements PathFinder {
 
@@ -14,11 +15,13 @@ public class AstarOpt implements PathFinder {
 
 	private int heigth;
 	private int width;
+	private AtomicBoolean processing;
 	
-	public void setMatrix(int[][] matrix) {
+	public AstarOpt(int[][] matrix) {
 		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
+		processing = new AtomicBoolean(false);
 		array = makeNodeArray(matrix); // uses array to optimize locality
 	}
 
@@ -36,6 +39,7 @@ public class AstarOpt implements PathFinder {
 	 * @return path The indices of the cells (vectorized) in ordered form that represents the shortest path from start to destination
 	 */
 	public List<Integer> calculatePath(int startX, int startY, int destX, int destY) {
+		processing.set(true);
 		calculateDistanceAndId(destY, destX);
 		Node current = array[getId(startY, startX)];
 		Node destNode = array[getId(destY, destX)];
@@ -58,7 +62,9 @@ public class AstarOpt implements PathFinder {
 				current = removeCheapestNode(openList);
 			}
 		}
-		return getPath(destNode);
+		List<Integer> path = getPath(destNode);
+		processing.set(false);
+		return path;
 	}
 
 	Node removeCheapestNode(List<Node> openList) {
@@ -158,6 +164,11 @@ public class AstarOpt implements PathFinder {
 	
 	Node get(int y, int x) {
 		return array[getId(y, x)];
+	}
+
+	@Override
+	public boolean isProcessing() {
+		return processing.get();
 	}
 
 }

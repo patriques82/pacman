@@ -36,6 +36,11 @@ public class FollowingStrateyTest {
 		path.add(16);
 		path.add(20);
 		Mockito.when(mockAstar.calculatePath(1, 1, 3, 4)).thenReturn(path);
+		Mockito.when(mockAstar.calculatePath(1, 2, 3, 4)).thenReturn(path);
+		Mockito.when(mockAstar.calculatePath(2, 2, 3, 4)).thenReturn(path);
+		Mockito.when(mockAstar.calculatePath(3, 2, 3, 4)).thenReturn(path);
+		Mockito.when(mockAstar.calculatePath(3, 3, 3, 4)).thenReturn(path);
+
 //		Mockito.when(mockAstar.getWidth()).thenReturn(4);
 		strategy = new FollowingStrategy(tiles, mockAstar);
 	}
@@ -53,23 +58,10 @@ public class FollowingStrateyTest {
 		assertThat(strategy.getYDir(1,1), is(0));
 
 		strategy.findPath(1, 1, 3, 4);
-		// no movement since monster just calculated path and is now getting the first cell of path (where monster is)
-		assertThat(strategy.getXDir(1,1), is(0));
-		assertThat(strategy.getYDir(1,1), is(0));
-
-		strategy.findPath(1, 1, 3, 4);
 		// move down since next step is now below monster (1,2)
 		assertThat(strategy.getXDir(1,1), is(0));
-//		assertThat(strategy.getYDir(1), is(1));
-		int ydir = strategy.getYDir(1,1);
-		assertThat(ydir, is(1));
+		assertThat(strategy.getYDir(1,1), is(1));
 
-		strategy.findPath(1, 2, 3, 4);
-		// move right (2,2)
-		assertThat(strategy.getXDir(1,2), is(0));
-		assertThat(strategy.getYDir(1,2), is(0));
-		
-		// remove
 		strategy.findPath(1, 2, 3, 4);
 		// move right (2,2)
 		assertThat(strategy.getXDir(1,2), is(1));
@@ -79,7 +71,8 @@ public class FollowingStrateyTest {
 		// move right (3,2)
 		assertThat(strategy.getXDir(2,2), is(1));
 		assertThat(strategy.getYDir(2,2), is(0));
-
+		
+		// remove
 		strategy.findPath(3, 2, 3, 4);
 		// move down (3,3)
 		assertThat(strategy.getXDir(3,2), is(0));
