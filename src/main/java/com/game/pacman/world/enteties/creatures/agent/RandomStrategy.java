@@ -40,7 +40,6 @@ public class RandomStrategy implements Strategy {
 		long now = System.nanoTime();
 		boolean decisionTime = threshold < (now - lastTime); // increase closer to threshold
 		if(decisionTime) {
-//			if(currentX == lastX && currentY == lastY) { // is stuck?
 			if(currentY == lastY) { // is stuck?
 				lastYDir = computeYDir(currentX, currentY);
 			}
@@ -55,7 +54,6 @@ public class RandomStrategy implements Strategy {
 		boolean decisionTime = threshold < (now - lastTime); // increase closer to threshold
 
 		if(decisionTime) {
-//			if(currentX == lastX && currentY == lastY) { // is stuck?
 			if(currentX == lastX) { // is stuck?
 				lastXDir = computeXDir(currentX, currentY);
 			}
@@ -68,27 +66,32 @@ public class RandomStrategy implements Strategy {
 		double rand = Math.random() * 10;
 		int up = (currentY - 1 >= 0) ? matrix[currentY-1][currentX] : 1;
 		int down = (currentY + 1 < heigth) ? matrix[currentY+1][currentX] : 1; 
-		return randomAvailableDir(up, down, rand);
+		// 0 -> non available, 1 -> up available, 2 -> down available, 3 -> both
+		int available = (3 - up) - ((down != up) ? 1 : (down + up)); 
+		if(available == 0) // non available
+			return 0;
+		else if(available == 1) // down
+			return 1;
+		else if(available == 2) // up
+			return -1;
+		else // both
+			return (rand < 5) ? -1 : 1;
 	}
 
 	int computeXDir(int currentX, int currentY) {
 		double rand = Math.random() * 10;
 		int left = (currentX - 1 >= 0) ? matrix[currentY][currentX-1] : 1;
 		int right = (currentX + 1 < width) ? matrix[currentY][currentX+1] : 1; 
-		return randomAvailableDir(left, right, rand);
-	}
-
-	private int randomAvailableDir(int negDir, int posDir, double rand) {
-		// 0 -> non available, 1 -> negDir available, 2 -> posDir available, 3 -> both
-		int available = (3 - negDir) - ((posDir != negDir) ? 1 : (posDir + negDir)); 
-		if(available == 0)
+		// 0 -> non available, 1 -> right available, 2 -> left available, 3 -> both
+		int available = (3 - left) - ((right != left) ? 1 : (right + left)); 
+		if(available == 0) // non available
 			return 0;
-		else if(available == 1)
-			return (rand < 5) ? 1 : 0;
-		else if(available == 2)
-			return (rand < 5) ? -1 : 0;
-		else
-			return (rand < 3.33) ? -1 : (rand > 6.66) ? 1 : 0;
+		else if(available == 1) // right
+			return 1;
+		else if(available == 2) // left
+			return -1;
+		else // both
+			return (rand < 5) ? -1 : 1;
 	}
 
 }
