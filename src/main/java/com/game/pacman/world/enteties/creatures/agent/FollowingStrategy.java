@@ -4,10 +4,9 @@ import java.util.List;
 
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 
-public class FollowingStrategy implements Strategy {
+public class FollowingStrategy extends Strategy {
 	
 	protected PathFinder astar;
-	protected Agent agent;
 
 	protected int[][] matrix;
 	protected int width;
@@ -22,16 +21,12 @@ public class FollowingStrategy implements Strategy {
 	
 
 	public FollowingStrategy(final int[][] matrix, PathFinder astar) {
-		setMatrix(matrix);
-		this.astar = astar;
-		pathPosition = 0;
-	}
-	
-	public void setMatrix(final int[][] matrix) {
 		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		this.matrix = matrix;
 		this.heigth = matrix.length;
 		this.width = matrix[0].length;
+		this.astar = astar;
+		pathPosition = 0;
 	}
 
 	@Override
@@ -54,8 +49,8 @@ public class FollowingStrategy implements Strategy {
 			} else {
 				pathPosition = 0;
 				if(getPath() != null) // reached end => Switch to bread crumb strategy
-					agent.setStrategy(new RandomStrategy(matrix));
-//					agent.setStrategy(new BreadCrumbsStrategy(matrix));
+					agent.setStrategy(new BreadCrumbsStrategy(matrix));
+//					agent.setStrategy(new RandomStrategy(matrix));
 			}
 		}
 	}
@@ -89,11 +84,6 @@ public class FollowingStrategy implements Strategy {
 
 	int getYCoord(int cell) {
 		return (cell-1) / width;
-	}
-
-	@Override
-	public void setAgent(Agent agent) {
-		this.agent = agent;
 	}
 
 }

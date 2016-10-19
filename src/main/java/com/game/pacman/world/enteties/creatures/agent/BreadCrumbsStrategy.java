@@ -1,19 +1,18 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
-public class BreadCrumbsStrategy implements Strategy {
+public class BreadCrumbsStrategy extends Strategy {
 	
-	private int[][] matrix;
+//	private int[][] matrix;
 	private int width;
 	private int heigth;
 
-	private Agent agent;
 	private enum Direction {NORTH, SOUTH, EAST, WEST};
 
 	private int[][] breadCrumbs; // 0 -> 1, 1 -> 0 (0 unreachable)
 
 	public BreadCrumbsStrategy(final int[][] matrix) {
 		breadCrumbs = invert(matrix);
-		this.matrix = matrix;
+//		this.matrix = matrix;
 		heigth = matrix.length;
 		width = matrix[0].length;
 	}
@@ -21,7 +20,7 @@ public class BreadCrumbsStrategy implements Strategy {
 	@Override
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		breadCrumbs[playerY][playerX]++;
-		breadCrumbs[currentY][currentX] = 1; // erase history
+		breadCrumbs[currentY][currentX] = Math.max(1, breadCrumbs[currentY][currentX]-1);
 	}
 
 	@Override
@@ -50,7 +49,6 @@ public class BreadCrumbsStrategy implements Strategy {
 		}
 	}
 
-
 	private Direction getDirectionOfMaxCrumbs(int currentX, int currentY) {
 		int[] dirs = {0,0,0,0}; //north, south, east, west;
 		if(currentY-1 >= 0)
@@ -74,22 +72,14 @@ public class BreadCrumbsStrategy implements Strategy {
 		return maxIndex;
 	}
 
-	@Override
-	public void setAgent(Agent agent) {
-		this.agent = agent;
-	}
-
-	private int[][] invert(int[][] matrix) {
+	int[][] invert(int[][] matrix) {
 		int[][] invertedMatrix = new int[matrix.length][matrix[0].length];
 		for (int y = 0; y < matrix.length; y++) {
 			for (int x = 0; x < matrix[y].length; x++) {
 				invertedMatrix[y][x] = matrix[y][x] ^ 1; // invert
-				invertedMatrix[y][x] *= 2;
 			}
 		}
 		return invertedMatrix;
 	}
-
-
 
 }

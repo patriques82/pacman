@@ -1,8 +1,7 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
-public class RandomStrategy implements Strategy {
+public class RandomStrategy extends Strategy {
 	
-	private Agent agent;
 	private int lastX, lastXDir;
 	private int lastY, lastYDir;
 
@@ -22,11 +21,6 @@ public class RandomStrategy implements Strategy {
 		width = matrix[0].length;
 		lastTime = System.nanoTime();
 		threshold = 1000_000_000L / DPS;
-	}
-
-	@Override
-	public void setAgent(Agent agent) {
-		this.agent = agent;
 	}
 
 	@Override
