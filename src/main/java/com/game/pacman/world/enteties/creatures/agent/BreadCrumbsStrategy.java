@@ -2,7 +2,6 @@ package com.game.pacman.world.enteties.creatures.agent;
 
 public class BreadCrumbsStrategy extends Strategy {
 	
-//	private int[][] matrix;
 	private int width;
 	private int heigth;
 
@@ -12,7 +11,6 @@ public class BreadCrumbsStrategy extends Strategy {
 
 	public BreadCrumbsStrategy(final int[][] matrix) {
 		breadCrumbs = invert(matrix);
-//		this.matrix = matrix;
 		heigth = matrix.length;
 		width = matrix[0].length;
 	}
@@ -50,7 +48,7 @@ public class BreadCrumbsStrategy extends Strategy {
 	}
 
 	private Direction getDirectionOfMaxCrumbs(int currentX, int currentY) {
-		int[] dirs = {0,0,0,0}; //north, south, east, west;
+		int[] dirs = {0, 0, 0, 0}; //north, south, east, west;
 		if(currentY-1 >= 0)
 			dirs[0] = breadCrumbs[currentY-1][currentX];
 		if(currentY+1 < heigth)
@@ -76,7 +74,7 @@ public class BreadCrumbsStrategy extends Strategy {
 		int[][] invertedMatrix = new int[matrix.length][matrix[0].length];
 		for (int y = 0; y < matrix.length; y++) {
 			for (int x = 0; x < matrix[y].length; x++) {
-				invertedMatrix[y][x] = matrix[y][x] ^ 1; // invert
+				invertedMatrix[y][x] = (matrix[y][x] ^ 1); // invert
 			}
 		}
 		return invertedMatrix;
