@@ -7,18 +7,16 @@ public class BreadCrumbsStrategy extends Strategy {
 
 	private enum Direction {NORTH, SOUTH, EAST, WEST};
 
-	private int[][] breadCrumbs; // 0 -> 1, 1 -> 0 (0 unreachable)
 
 	public BreadCrumbsStrategy(final int[][] matrix) {
-		breadCrumbs = invert(matrix);
+		super(matrix);
 		heigth = matrix.length;
 		width = matrix[0].length;
 	}
 
 	@Override
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
-		breadCrumbs[playerY][playerX]++;
-		breadCrumbs[currentY][currentX] = Math.max(1, breadCrumbs[currentY][currentX]-1);
+		updateMatrix(currentX, currentY, playerX, playerY);
 	}
 
 	@Override
@@ -50,13 +48,13 @@ public class BreadCrumbsStrategy extends Strategy {
 	private Direction getDirectionOfMaxCrumbs(int currentX, int currentY) {
 		int[] dirs = {0, 0, 0, 0}; //north, south, east, west;
 		if(currentY-1 >= 0)
-			dirs[0] = breadCrumbs[currentY-1][currentX];
+			dirs[0] = matrix[currentY-1][currentX];
 		if(currentY+1 < heigth)
-			dirs[1] = breadCrumbs[currentY+1][currentX];
+			dirs[1] = matrix[currentY+1][currentX];
 		if(currentX+1 < width)
-			dirs[2] = breadCrumbs[currentY][currentX+1];
+			dirs[2] = matrix[currentY][currentX+1];
 		if(currentX-1 >= 0)
-			dirs[3] = breadCrumbs[currentY][currentX-1];
+			dirs[3] = matrix[currentY][currentX-1];
 		return Direction.values()[maxIndex(dirs)];
 	}
 
@@ -70,14 +68,5 @@ public class BreadCrumbsStrategy extends Strategy {
 		return maxIndex;
 	}
 
-	int[][] invert(int[][] matrix) {
-		int[][] invertedMatrix = new int[matrix.length][matrix[0].length];
-		for (int y = 0; y < matrix.length; y++) {
-			for (int x = 0; x < matrix[y].length; x++) {
-				invertedMatrix[y][x] = (matrix[y][x] ^ 1); // invert
-			}
-		}
-		return invertedMatrix;
-	}
 
 }

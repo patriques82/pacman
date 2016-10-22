@@ -10,11 +10,11 @@ import org.junit.Test;
 public class RandomStrategyTest {
 
 	int[][] tiles = {
-		{0,0,0,0},
-		{0,0,1,0}, // start in (1,1)
-		{0,0,0,0},
-		{1,0,1,0},
-		{0,0,1,0} // goal in (3,4)
+		{1,1,1,1},
+		{1,1,0,1}, // start in (1,1)
+		{1,1,1,1},
+		{0,1,0,1},
+		{1,1,0,1} // goal in (3,4)
 	};
 	RandomStrategy strategy;
 

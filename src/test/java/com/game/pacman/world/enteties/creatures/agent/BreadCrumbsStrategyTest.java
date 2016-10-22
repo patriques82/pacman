@@ -10,11 +10,11 @@ import org.junit.Test;
 public class BreadCrumbsStrategyTest {
 
 	int[][] tiles = {
-		{0,0,0,0},
-		{0,0,1,0}, // start in (1,1)
-		{0,0,0,0},
-		{1,0,1,0},
-		{0,0,1,0} // goal in (3,4)
+		{1,1,1,1},
+		{1,1,0,1}, // start in (1,1)
+		{1,1,1,1},
+		{0,1,0,1},
+		{1,1,0,1} // goal in (3,4)
 	};
 	BreadCrumbsStrategy strategy;
 
@@ -69,18 +69,6 @@ public class BreadCrumbsStrategyTest {
 		assertThat(strategy.getXDir(1,2), is(0));
 		assertThat(strategy.getYDir(1,2), is(-1));
 
-	}
-
-	@Test
-	public final void testInvert() {
-		int[][] matrix = {{1,0,0},{0,1,0},{0,0,1}};
-		int[][] inverted = strategy.invert(matrix);
-		int[] arr0 = {0,1,1};
-		assertThat(inverted[0], is(arr0));
-		int[] arr1 = {1,0,1};
-		assertThat(inverted[1], is(arr1));
-		int[] arr2 = {1,1,0};
-		assertThat(inverted[2], is(arr2));
 	}
 
 }

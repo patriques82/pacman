@@ -18,7 +18,6 @@ public class AstarOpt implements PathFinder {
 	private AtomicBoolean processing;
 	
 	public AstarOpt(int[][] matrix) {
-		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
 		heigth = matrix.length;
 		width = matrix[0].length;
 		processing = new AtomicBoolean(false);
@@ -85,7 +84,7 @@ public class AstarOpt implements PathFinder {
 		Node[] nodeArray = new Node[heigth * width];
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
-				if(matrix[y][x] == 0) { // empty tile possible to reach
+				if(matrix[y][x] == 1) { // empty tile possible to reach
 					nodeArray[getId(y, x)] = new Node(y, x);
 				} else { // block tile
 					nodeArray[getId(y, x)] = null;

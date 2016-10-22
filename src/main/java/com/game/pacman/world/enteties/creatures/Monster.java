@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.FollowingAsyncStrategy;
+import com.game.pacman.world.enteties.creatures.agent.RandomStrategy;
+import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.AstarOpt;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
@@ -21,7 +23,9 @@ public class Monster extends CreatureEntity {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
 		player = p;
-		agent = new Agent(new FollowingAsyncStrategy(w.getTiles(), new AstarOpt(w.getTiles())));
+		int[][] invertedTiles = w.getInvertedTiles();
+		agent = new Agent(new FollowingAsyncStrategy(invertedTiles, new AstarOpt(invertedTiles)));
+//		agent = new Agent(new RandomStrategy(invertedTiles));
 		animation = new Animation(500, Assets.monsterUp);
 	}
 	

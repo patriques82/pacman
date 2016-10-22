@@ -8,9 +8,6 @@ public class FollowingStrategy extends Strategy {
 	
 	protected PathFinder astar;
 
-	protected int[][] matrix;
-	protected int width;
-	protected int heigth;
 
 	protected List<Integer> path;
 	protected int pathPosition;
@@ -21,10 +18,7 @@ public class FollowingStrategy extends Strategy {
 	
 
 	public FollowingStrategy(final int[][] matrix, PathFinder astar) {
-		assert(matrix.length > 1 && matrix[0].length > 1); // world must be larger than 1*1
-		this.matrix = matrix;
-		this.heigth = matrix.length;
-		this.width = matrix[0].length;
+		super(matrix);
 		this.astar = astar;
 		pathPosition = 0;
 	}
@@ -33,6 +27,8 @@ public class FollowingStrategy extends Strategy {
 	public void findPath(int currentX, int currentY, int playerX, int playerY) {
 		targetX = currentX; // until path has been calculated
 		targetY = currentY;
+		updateMatrix(currentX, currentY, playerX, playerY);
+
 		int currentCell = currentX + (currentY * width) + 1;
 		if(getPath() == null && !astar.isProcessing()) {
 			process(currentX, currentY, playerX, playerY);

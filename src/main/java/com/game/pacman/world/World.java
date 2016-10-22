@@ -157,4 +157,14 @@ public class World extends Observable {
 		}
 	}
 
+	public int[][] getInvertedTiles() {
+		int[][] invertedMatrix = new int[tiles.length][tiles[0].length];
+		for (int y = 0; y < tiles.length; y++) {
+			for (int x = 0; x < tiles[y].length; x++) {
+				invertedMatrix[y][x] = (tiles[y][x] ^ 1); // invert
+			}
+		}
+		return invertedMatrix;
+	}
+
 }

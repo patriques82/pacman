@@ -18,12 +18,12 @@ import static org.hamcrest.CoreMatchers.*;
 			
 public class AstarTest {
 
-	final int[][] matrix = {
-		{0,0,0,0},
-		{0,0,1,0}, // start in (1,1)
-		{0,0,0,0},
-		{1,0,1,0},
-		{0,0,1,0} // goal in (3,4)
+	int[][] matrix = {
+		{1,1,1,1},
+		{1,1,0,1}, // start in (1,1)
+		{1,1,1,1},
+		{0,1,0,1},
+		{1,1,0,1} // goal in (3,4)
 	};
 	Astar astar; 
 

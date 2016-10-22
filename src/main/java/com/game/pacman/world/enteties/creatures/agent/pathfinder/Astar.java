@@ -84,7 +84,7 @@ public class Astar implements PathFinder {
 		Node[][] nodeMatrix = new Node[heigth][width];
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
-				if(matrix[y][x] == 0) { // empty tile possible to reach
+				if(matrix[y][x] == 1) { // empty tile possible to reach
 					nodeMatrix[y][x] = new Node(y, x);
 				} else { // block tile
 					nodeMatrix[y][x] = null;
@@ -100,7 +100,7 @@ public class Astar implements PathFinder {
 		for(int y=0; y<heigth; y++) {
 			for(int x=0; x<width; x++) {
 				if(graph[y][x] == null) { // empty tile possible to reach
-					System.out.print("1 ");
+					System.out.print("x ");
 				} else {
 					System.out.print("0 ");
 				}

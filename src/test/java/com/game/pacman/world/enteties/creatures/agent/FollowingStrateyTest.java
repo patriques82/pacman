@@ -17,11 +17,11 @@ import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
 public class FollowingStrateyTest {
 	
 	int[][] tiles = {
-		{0,0,0,0},
-		{0,0,1,0}, // start in (1,1)
-		{0,0,0,0},
-		{1,0,1,0},
-		{0,0,1,0} // goal in (3,4)
+		{1,1,1,1},
+		{1,1,0,1}, // start in (1,1)
+		{1,1,1,1},
+		{0,1,0,1},
+		{1,1,0,1} // goal in (3,4)
 	};
 	FollowingStrategy strategy;
 
