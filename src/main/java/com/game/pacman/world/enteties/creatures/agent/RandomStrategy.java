@@ -70,7 +70,7 @@ public class RandomStrategy extends Strategy {
 		else if(up > 0 && down == 0) // up
 			return -1;
 		else // both
-			return (rand <= 5.0) ? -1 : 1;
+			return (rand < 5.0) ? -1 : 1;
 	}
 
 	int computeXDir(int currentX, int currentY) {
@@ -82,7 +82,7 @@ public class RandomStrategy extends Strategy {
 		else if(left > 0 && right == 0) // left
 			return -1;
 		else // both
-			return (rand <= 5.0) ? -1 : 1;
+			return (rand < 5.0) ? -1 : 1;
 	}
 
 }

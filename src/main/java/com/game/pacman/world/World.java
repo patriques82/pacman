@@ -44,8 +44,14 @@ public class World extends Observable {
 		Player player = new Player(startX, startY, this); // 23, 23
 		entityMngr.setPlayer(player);
 		// hard coded test
-		Monster monster = new Monster(16, 18, this, player);
-		entityMngr.addCreature(monster);
+		Monster monster1 = new Monster(1, 1, this, player); // upper left
+		Monster monster2 = new Monster(21, 1, this, player); // upper right
+		Monster monster3 = new Monster(1, 21, this, player); // lower left
+		Monster monster4 = new Monster(21, 21, this, player); // lower right
+		entityMngr.addCreature(monster1);
+		entityMngr.addCreature(monster2);
+		entityMngr.addCreature(monster3);
+		entityMngr.addCreature(monster4);
 	}
 	
 	public void tick() {
