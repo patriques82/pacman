@@ -22,7 +22,7 @@ public abstract class Strategy {
 		assert(playerY >= 0 && playerY < heigth && playerX >= 0 && playerX < width);
 		assert(currentY >= 0 && currentY < heigth && currentX >= 0 && currentX < width);
 		matrix[playerY][playerX]++;
-		matrix[currentY][currentX] = Math.max(1, matrix[currentY][currentX]-1);
+		matrix[currentY][currentX] = 1; //Math.max(1, matrix[currentY][currentX]-1);
 	}
 
 	public abstract void findPath(int currentX, int currentY, int playerX, int playerY);

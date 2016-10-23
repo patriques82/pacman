@@ -46,7 +46,6 @@ public class FollowingStrategy extends Strategy {
 				pathPosition = 0;
 				if(getPath() != null) // reached end => Switch to bread crumb strategy
 					agent.setStrategy(new BreadCrumbsStrategy(matrix));
-//					agent.setStrategy(new RandomStrategy(matrix));
 			}
 		}
 	}

@@ -5,8 +5,6 @@ import java.awt.Graphics;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.FollowingAsyncStrategy;
-import com.game.pacman.world.enteties.creatures.agent.RandomStrategy;
-import com.game.pacman.world.enteties.creatures.agent.pathfinder.Astar;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.AstarOpt;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
@@ -59,7 +57,10 @@ public class Monster extends CreatureEntity {
 	private void getInput() {
 		int x = (int) (getX()/Tile.TILESIZE);
 		int y = (int) (getY()/Tile.TILESIZE);
-		agent.computeDirection(x, y, (int) player.getX()/Tile.TILESIZE, (int) player.getY()/Tile.TILESIZE);
+		int px = (int) player.getX()/Tile.TILESIZE;
+		int py = (int) player.getY()/Tile.TILESIZE;
+		agent.computeDirection(x, y, px, py);
+//		System.out.println("(x,y): (" + x + "," + y + ")   (px,py): (" + px + "," + py + ")");
 		if(agent.pressUp(x,y))
 			setDy(-speed);
 		if(agent.pressDown(x,y))
