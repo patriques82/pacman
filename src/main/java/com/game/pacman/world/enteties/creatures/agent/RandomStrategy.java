@@ -7,7 +7,7 @@ public class RandomStrategy extends Strategy {
 
 	private long lastTime;
 	private double threshold;
-	private static float DPS = 2f; // decisions per second
+	private static float DPS = 1f; // decisions per second
 
 	public RandomStrategy(final int[][] matrix) {
 		super(matrix);

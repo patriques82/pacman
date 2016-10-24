@@ -77,8 +77,6 @@ public class Monster extends CreatureEntity {
 	}
 
 	@Override
-	public void enemyCollision(int x, int y, int dx, int dy) {
-		// TODO: bounce
-	}
+	public void enemyCollision(int x, int y, int dx, int dy) { }
 
 }

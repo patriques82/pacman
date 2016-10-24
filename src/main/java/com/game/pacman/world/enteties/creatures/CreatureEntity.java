@@ -64,7 +64,7 @@ public abstract class CreatureEntity extends Entity {
 			if(!collidesWithSolid(newX + bounds.width, y + bounds.y, w) &&
 			   !collidesWithSolid(newX + bounds.width, y + bounds.y + bounds.height, w)) {
 				dir = Direction.RIGHT;
-				x += dx;
+				x = (x + dx) % w.getWidth(); // wrap around
 			}
 		}
 		else if(dx < 0) { // left
@@ -72,7 +72,7 @@ public abstract class CreatureEntity extends Entity {
 			if(!collidesWithSolid(newX, y + bounds.y, w) &&
 			   !collidesWithSolid(newX, y + bounds.y + bounds.height, w)) {
 				dir = Direction.LEFT;
-				x += dx;
+				x = (x + dx + w.getWidth()) % w.getWidth(); // wrap around
 			}
 		}
 		else { // not moving in x
@@ -90,7 +90,7 @@ public abstract class CreatureEntity extends Entity {
 			if(!collidesWithSolid(x + bounds.x, newY + bounds.height, w) &&
 			   !collidesWithSolid(x + bounds.x + bounds.width, newY + bounds.height, w)) {
 				dir = Direction.DOWN;
-				y += dy;
+				y = (y + dy) % w.getHeigth();  // wrap around
 			}
 			
 		}
@@ -99,7 +99,7 @@ public abstract class CreatureEntity extends Entity {
 			if(!collidesWithSolid(x + bounds.x, newY, w) &&
 			   !collidesWithSolid(x + bounds.x + bounds.width, newY, w)) {
 				dir = Direction.UP;
-				y += dy;
+				y = (y + dy + w.getHeigth()) % w.getHeigth(); // wrap around
 			}
 		}
 		else { // not moving in y

@@ -173,4 +173,12 @@ public class World extends Observable {
 		return invertedMatrix;
 	}
 
+	public float getWidth() {
+		return tiles[0].length * Tile.TILESIZE;
+	}
+
+	public float getHeigth() {
+		return tiles.length * Tile.TILESIZE;
+	}
+
 }
