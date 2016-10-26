@@ -12,7 +12,7 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-mainClassName = "com.game.main.Main"
+mainClassName = "com.game.pacman.Launcher"
 
 repositories {
     // Use 'jcenter' for resolving your dependencies.
