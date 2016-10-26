@@ -59,7 +59,6 @@ public class Monster extends CreatureEntity {
 		int px = (int) player.getX()/Tile.TILESIZE;
 		int py = (int) player.getY()/Tile.TILESIZE;
 		agent.computeDirection(x, y, px, py);
-//		System.out.println("(x,y): (" + x + "," + y + ")   (px,py): (" + px + "," + py + ")");
 		if(agent.pressUp(x,y))
 			setDy(-speed);
 		if(agent.pressDown(x,y))

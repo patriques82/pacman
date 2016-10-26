@@ -29,7 +29,7 @@ public class Agent {
 	}
 
 	public boolean pressRight(int x, int y) {
-		return strategy.getXDir(x, y) == 1;
+		return strategy.getXDir(x,y) == 1;
 	}
 
 }
