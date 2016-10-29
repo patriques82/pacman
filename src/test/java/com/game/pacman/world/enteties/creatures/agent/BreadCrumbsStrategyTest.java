@@ -51,24 +51,4 @@ public class BreadCrumbsStrategyTest {
 		assertThat(strategy.getYDir(1, 3), is(-1)); // should move to right, not up or down
 	}
 
-	@Test
-	public final void testGetXYDir() {
-		strategy.findPath(0,4,1,3);
-		assertThat(strategy.getXDir(0,4), is(1));
-		assertThat(strategy.getYDir(0,4), is(0));
-
-		strategy.findPath(1,4,1,2);
-		assertThat(strategy.getXDir(1,4), is(0));
-		assertThat(strategy.getYDir(1,4), is(-1));
-
-		strategy.findPath(1,3,1,1);
-		assertThat(strategy.getXDir(1,3), is(0));
-		assertThat(strategy.getYDir(1,3), is(-1));
-
-		strategy.findPath(1,2,1,0);
-		assertThat(strategy.getXDir(1,2), is(0));
-		assertThat(strategy.getYDir(1,2), is(-1));
-
-	}
-
 }

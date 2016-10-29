@@ -6,8 +6,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.game.pacman.world.enteties.EntityManager;
+import com.game.pacman.world.enteties.creatures.AzureMonster;
 import com.game.pacman.world.enteties.creatures.Monster;
 import com.game.pacman.world.enteties.creatures.Player;
+import com.game.pacman.world.enteties.creatures.PurpleMonster;
+import com.game.pacman.world.enteties.creatures.RedMonster;
+import com.game.pacman.world.enteties.creatures.YellowMonster;
 import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
@@ -40,18 +44,20 @@ public class World extends Observable {
 		loadWorld(path);
 
 		entityMngr = new EntityManager(); 
+
 		// Player
 		Player player = new Player(startX, startY, this); // 23, 23
 		entityMngr.setPlayer(player);
-		// hard coded test
-		Monster monster1 = new Monster(1, 1, this, player); // upper left
-		Monster monster2 = new Monster(21, 1, this, player); // upper right
-		Monster monster3 = new Monster(1, 21, this, player); // lower left
-		Monster monster4 = new Monster(21, 21, this, player); // lower right
-		entityMngr.addCreature(monster1);
-		entityMngr.addCreature(monster2);
-		entityMngr.addCreature(monster3);
-		entityMngr.addCreature(monster4);
+
+		// Monsters
+		Monster redMonster 	  = new RedMonster(1, 1, this, player); // upper left
+		Monster yellowMonster = new YellowMonster(21, 1, this, player); // upper right
+		Monster purpleMonster = new PurpleMonster(1, 21, this, player); // lower left
+		Monster azureMonster  = new AzureMonster(21, 21, this, player); // lower right
+		entityMngr.addCreature(redMonster);
+		entityMngr.addCreature(yellowMonster);
+		entityMngr.addCreature(purpleMonster);
+		entityMngr.addCreature(azureMonster);
 	}
 	
 	public void tick() {

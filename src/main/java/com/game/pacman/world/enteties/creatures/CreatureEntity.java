@@ -111,7 +111,6 @@ public abstract class CreatureEntity extends Entity {
 		for(CreatureEntity c : creatures) {
 			if(!this.equals(c)) {
 				if(this.getBounds().intersects(c.getBounds())) {
-					System.out.println("Collision");
 					return true;
 				}
 			}
