@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.CreatureEntity;
 import com.game.pacman.world.enteties.creatures.Player;
-import com.game.pacman.world.enteties.creatures.CreatureEntity.Direction;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.RandomStrategy;
 import com.game.pacman.world.gfx.Animation;
@@ -16,17 +15,16 @@ public abstract class Monster extends CreatureEntity {
 	public enum Type { RED, YELLOW, AZURE, PURPLE };
 
 	protected Animation animation;
+	protected Agent agent;
+
 	private World world;
-	private Agent agent;
 	private Player player;
 	
 	public Monster(int x, int y, World w, Player p) {
 		super(x, y, 1, 1); // size: 1 * 1 tiles
 		world = w;
 		player = p;
-		int[][] invertedTiles = w.getInvertedTiles();
-//		agent = new Agent(new FollowingAsyncStrategy(invertedTiles, new AstarOpt(invertedTiles)));
-		agent = new Agent(new RandomStrategy(invertedTiles));
+		agent = new Agent(new RandomStrategy(w.getInvertedTiles()));
 	}
 	
 	public abstract void setAnimation(Direction dir);

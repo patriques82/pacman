@@ -7,12 +7,8 @@ import java.io.IOException;
 
 import com.game.pacman.world.enteties.EntityManager;
 import com.game.pacman.world.enteties.creatures.Player;
-import com.game.pacman.world.enteties.creatures.monster.AzureMonster;
 import com.game.pacman.world.enteties.creatures.monster.Monster;
 import com.game.pacman.world.enteties.creatures.monster.MonsterFactory;
-import com.game.pacman.world.enteties.creatures.monster.PurpleMonster;
-import com.game.pacman.world.enteties.creatures.monster.RedMonster;
-import com.game.pacman.world.enteties.creatures.monster.YellowMonster;
 import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
