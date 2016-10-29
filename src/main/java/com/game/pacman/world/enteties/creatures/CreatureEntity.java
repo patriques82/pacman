@@ -13,7 +13,7 @@ public abstract class CreatureEntity extends Entity {
 	public static final int DEFAULT_HEALH = 10;
 	public static final float DEFAULT_SPEED = 3.0f;
 	
-	enum Direction { UP, DOWN, LEFT, RIGHT };
+	public enum Direction { UP, DOWN, LEFT, RIGHT };
 	protected Direction dir;
 
 	private float dx, dy;

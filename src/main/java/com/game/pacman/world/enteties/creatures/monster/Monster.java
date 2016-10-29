@@ -1,14 +1,19 @@
-package com.game.pacman.world.enteties.creatures;
+package com.game.pacman.world.enteties.creatures.monster;
 
 import java.awt.Graphics;
 
 import com.game.pacman.world.World;
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
+import com.game.pacman.world.enteties.creatures.Player;
+import com.game.pacman.world.enteties.creatures.CreatureEntity.Direction;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
 import com.game.pacman.world.enteties.creatures.agent.RandomStrategy;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.tiles.Tile;
 
 public abstract class Monster extends CreatureEntity {
+
+	public enum Type { RED, YELLOW, AZURE, PURPLE };
 
 	protected Animation animation;
 	private World world;

@@ -6,12 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.game.pacman.world.enteties.EntityManager;
-import com.game.pacman.world.enteties.creatures.AzureMonster;
-import com.game.pacman.world.enteties.creatures.Monster;
 import com.game.pacman.world.enteties.creatures.Player;
-import com.game.pacman.world.enteties.creatures.PurpleMonster;
-import com.game.pacman.world.enteties.creatures.RedMonster;
-import com.game.pacman.world.enteties.creatures.YellowMonster;
+import com.game.pacman.world.enteties.creatures.monster.AzureMonster;
+import com.game.pacman.world.enteties.creatures.monster.Monster;
+import com.game.pacman.world.enteties.creatures.monster.MonsterFactory;
+import com.game.pacman.world.enteties.creatures.monster.PurpleMonster;
+import com.game.pacman.world.enteties.creatures.monster.RedMonster;
+import com.game.pacman.world.enteties.creatures.monster.YellowMonster;
 import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
@@ -50,10 +51,11 @@ public class World extends Observable {
 		entityMngr.setPlayer(player);
 
 		// Monsters
-		Monster redMonster 	  = new RedMonster(1, 1, this, player); // upper left
-		Monster yellowMonster = new YellowMonster(21, 1, this, player); // upper right
-		Monster purpleMonster = new PurpleMonster(1, 21, this, player); // lower left
-		Monster azureMonster  = new AzureMonster(21, 21, this, player); // lower right
+		MonsterFactory monsterFactory = new MonsterFactory(this, player);
+		Monster redMonster 	  = monsterFactory.getMonster(Monster.Type.RED, 1,1);      // upper left
+		Monster yellowMonster = monsterFactory.getMonster(Monster.Type.YELLOW, 21, 1); // upper right
+		Monster purpleMonster = monsterFactory.getMonster(Monster.Type.PURPLE, 1, 21); // lower left
+		Monster azureMonster  = monsterFactory.getMonster(Monster.Type.AZURE, 21, 21); // lower right
 		entityMngr.addCreature(redMonster);
 		entityMngr.addCreature(yellowMonster);
 		entityMngr.addCreature(purpleMonster);
