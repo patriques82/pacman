@@ -3,7 +3,6 @@ package com.game.pacman.world.enteties.creatures.monster;
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.Player;
 import com.game.pacman.world.enteties.creatures.agent.Agent;
-import com.game.pacman.world.enteties.creatures.agent.FollowingAsyncStrategy;
 import com.game.pacman.world.enteties.creatures.agent.FollowingStrategy;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.AstarOpt;
 import com.game.pacman.world.gfx.Animation;
