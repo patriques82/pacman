@@ -1,22 +1,28 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import com.game.pacman.world.tiles.Tile;
+
 public class BreadCrumbsStrategy extends Strategy {
 	
 	private enum Direction {NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST};
+	private Direction maxDirection;
 
 	public BreadCrumbsStrategy(final int[][] matrix) {
 		super(matrix);
+		maxDirection = Direction.NORTH;
 	}
 
 	@Override
-	public void findPath(int currentX, int currentY, int playerX, int playerY) {
-		updateMatrix(currentX, currentY, playerX, playerY);
+	public void findPath(float currentX, float currentY, float playerX, float playerY) {
+		int logicalX = (int) currentX/Tile.TILESIZE;
+		int logicalY = (int) currentY/Tile.TILESIZE;
+		updateMatrix(logicalX, logicalY, (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
+		maxDirection = getDirectionOfMaxCrumbs(logicalX, logicalY);
 	}
 
 	@Override
-	public int getYDir(int currentX, int currentY) {
-		Direction d = getDirectionOfMaxCrumbs(currentX, currentY);
-		switch(d) {
+	public int getYDir(float currentX, float currentY) {
+		switch(maxDirection) {
 			case NORTH:
 				return -1;
 			case NORTHEAST:
@@ -35,9 +41,8 @@ public class BreadCrumbsStrategy extends Strategy {
 	}
 
 	@Override
-	public int getXDir(int currentX, int currentY) {
-		Direction d = getDirectionOfMaxCrumbs(currentX, currentY);
-		switch(d) {
+	public int getXDir(float currentX, float currentY) {
+		switch(maxDirection) {
 			case NORTHEAST:
 				return 1;
 			case EAST:
@@ -55,26 +60,26 @@ public class BreadCrumbsStrategy extends Strategy {
 		}
 	}
 
-	private Direction getDirectionOfMaxCrumbs(int currentX, int currentY) {
+	private Direction getDirectionOfMaxCrumbs(int logicalX, int logicalY) {
 		int[] dirs = {0, 0, 0, 0, 0, 0, 0, 0}; //north, northeast, east, southeast, south, southwest, west, northwest;
-		if(currentY-1 >= 0) {
-			dirs[0] = matrix[currentY-1][currentX]; // north
-			if(currentX+1 < width)
-				dirs[1] = matrix[currentY-1][currentX+1]; // northeast
-			if(currentX-1 >= 0)
-				dirs[7] = matrix[currentY-1][currentX-1]; // northwest
+		if(logicalY-1 >= 0) {
+			dirs[0] = matrix[logicalY-1][logicalX]; // north
+			if(logicalX+1 < width)
+				dirs[1] = matrix[logicalY-1][logicalX+1]; // northeast
+			if(logicalX-1 >= 0)
+				dirs[7] = matrix[logicalY-1][logicalX-1]; // northwest
 		}
-		if(currentX+1 < width)
-			dirs[2] = matrix[currentY][currentX+1]; // east
-		if(currentY+1 < heigth) {
-			dirs[4] = matrix[currentY+1][currentX]; // south
-			if(currentX+1 < width)
-				dirs[3] = matrix[currentY+1][currentX+1]; // southeast
-			if(currentX-1 >= 0)
-				dirs[5] = matrix[currentY+1][currentX-1]; // southwest
+		if(logicalX+1 < width)
+			dirs[2] = matrix[logicalY][logicalX+1]; // east
+		if(logicalY+1 < heigth) {
+			dirs[4] = matrix[logicalY+1][logicalX]; // south
+			if(logicalX+1 < width)
+				dirs[3] = matrix[logicalY+1][logicalX+1]; // southeast
+			if(logicalX-1 >= 0)
+				dirs[5] = matrix[logicalY+1][logicalX-1]; // southwest
 		}
-		if(currentX-1 >= 0)
-			dirs[6] = matrix[currentY][currentX-1]; // west
+		if(logicalX-1 >= 0)
+			dirs[6] = matrix[logicalY][logicalX-1]; // west
 
 		int maxIndex = maxIndex(dirs);
 		if(dirs[maxIndex] == 1) { // player not in sight

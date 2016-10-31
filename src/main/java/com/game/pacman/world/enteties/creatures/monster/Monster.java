@@ -42,18 +42,18 @@ public abstract class Monster extends CreatureEntity {
 // ************************************************************************************
 
 	private void getInput() {
-		int x = (int) (getX()/Tile.TILESIZE);
-		int y = (int) (getY()/Tile.TILESIZE);
-		int px = (int) player.getX()/Tile.TILESIZE;
-		int py = (int) player.getY()/Tile.TILESIZE;
-		agent.computeDirection(x, y, px, py);
-		if(agent.pressUp(x,y))
+//		int x = (int) (getX()/Tile.TILESIZE);
+//		int y = (int) (getY()/Tile.TILESIZE);
+//		int px = (int) player.getX()/Tile.TILESIZE;
+//		int py = (int) player.getY()/Tile.TILESIZE;
+		agent.computeDirection(getX(), getY(), player.getX(), player.getY());
+		if(agent.pressUp(getX(), getY()))
 			setDy(-speed);
-		if(agent.pressDown(x,y))
+		if(agent.pressDown(getX(), getY()))
 			setDy(speed);
-		if(agent.pressLeft(x,y))
+		if(agent.pressLeft(getX(), getY()))
 			setDx(-speed);
-		if(agent.pressRight(x,y))
+		if(agent.pressRight(getX(), getY()))
 			setDx(speed);
 	}
 

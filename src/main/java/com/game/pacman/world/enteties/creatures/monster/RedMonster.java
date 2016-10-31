@@ -2,9 +2,6 @@ package com.game.pacman.world.enteties.creatures.monster;
 
 import com.game.pacman.world.World;
 import com.game.pacman.world.enteties.creatures.Player;
-import com.game.pacman.world.enteties.creatures.agent.Agent;
-import com.game.pacman.world.enteties.creatures.agent.FollowingAsyncStrategy;
-import com.game.pacman.world.enteties.creatures.agent.pathfinder.AstarOpt;
 import com.game.pacman.world.gfx.Animation;
 import com.game.pacman.world.gfx.Assets;
 
@@ -13,10 +10,10 @@ public class RedMonster extends Monster {
 	public RedMonster(int x, int y, World w, Player p) {
 		super(x, y, w, p);
 		animation = new Animation(500, Assets.RedMonsterUp);
-		int[][] invertedTiles = w.getInvertedTiles();
-		agent = new Agent(new FollowingAsyncStrategy(
-						invertedTiles,
-						new AstarOpt(invertedTiles))); // overrides default RandomStrategy
+//		int[][] invertedTiles = w.getInvertedTiles();
+//		agent = new Agent(new FollowingAsyncStrategy(
+//						invertedTiles,
+//						new AstarOpt(invertedTiles))); // overrides default RandomStrategy
 	}
 
 	@Override

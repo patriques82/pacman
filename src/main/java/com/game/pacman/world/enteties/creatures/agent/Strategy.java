@@ -18,18 +18,18 @@ public abstract class Strategy {
 		this.agent = agent;
 	}
 	
-	protected void updateMatrix(int currentX, int currentY, int playerX, int playerY) {
-		assert(playerY >= 0 && playerY < heigth && playerX >= 0 && playerX < width);
-		assert(currentY >= 0 && currentY < heigth && currentX >= 0 && currentX < width);
-		matrix[playerY][playerX]++;
-		matrix[currentY][currentX] = 1;
+	protected void updateMatrix(int logicalX, int logicalY, int logicalPlayerX, int logicalPlayerY) {
+		assert(logicalPlayerY >= 0 && logicalPlayerY < heigth && logicalPlayerX >= 0 && logicalPlayerX < width);
+		assert(logicalY >= 0 && logicalY < heigth && logicalX >= 0 && logicalX < width);
+		matrix[logicalPlayerY][logicalPlayerX]++;
+		matrix[logicalY][logicalX] = 1;
 	}
 
-	public abstract void findPath(int currentX, int currentY, int playerX, int playerY);
+	public abstract void findPath(float startX, float startY, float destX, float destY);
 
-	public abstract int getYDir(int currentX, int currentY);
+	public abstract int getYDir(float x, float y);
 
-	public abstract int getXDir(int currentX, int currentY);
+	public abstract int getXDir(float x, float y);
 
 
 }
