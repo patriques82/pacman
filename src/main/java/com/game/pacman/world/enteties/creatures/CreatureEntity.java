@@ -16,6 +16,7 @@ public abstract class CreatureEntity extends Entity {
 	public enum Direction { UP, DOWN, LEFT, RIGHT };
 	protected Direction dir;
 
+	private float lastX, lastY;
 	private float dx, dy;
 
 	protected int health;
@@ -25,6 +26,8 @@ public abstract class CreatureEntity extends Entity {
 		super(x, y, width, height);
 		health = DEFAULT_HEALH;
 		speed = DEFAULT_SPEED;
+		lastX = x;
+		lastY = y;
 
 		// Override default settings of bounds to not cover whole body
 		float offset = Tile.TILESIZE * (1-BOUNDS_COVER);
@@ -58,6 +61,7 @@ public abstract class CreatureEntity extends Entity {
 	 * Moves creature in x direction if no collision with solid tiles
 	 */
 	public void moveX(World w) {
+		lastX = x;
 		float newX = x + dx + bounds.x;
 		if(dx > 0) { // right
 			// check upper right and lower right corners
@@ -84,6 +88,7 @@ public abstract class CreatureEntity extends Entity {
 	 * Moves creature in y direction if no collision with solid tiles
 	 */
 	public void moveY(World w) {
+		lastY = y;
 		float newY = y + dy + bounds.y;
 		if(dy > 0) { // down
 			// check lower left and lower right corners
@@ -121,7 +126,6 @@ public abstract class CreatureEntity extends Entity {
 	// What to do when colliding with enemy
 	public abstract void enemyCollision(int x, int y, int dx, int dy);
 
-
 	private boolean collidesWithSolid(float x, float y, World world) {
 		return world.getTile((int)(x/Tile.TILESIZE), (int) (y/Tile.TILESIZE)).isSolid();
 	}
@@ -142,6 +146,14 @@ public abstract class CreatureEntity extends Entity {
 
 	public void setDy(float dy) {
 		this.dy = dy;
+	}
+	
+	public float getLastX() {
+		return lastX;
+	}
+	
+	public float getLastY() {
+		return lastY;
 	}
 	
 	public Direction getDir() {

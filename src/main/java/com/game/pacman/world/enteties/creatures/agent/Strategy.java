@@ -1,5 +1,7 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
+
 public abstract class Strategy {
 	
 	protected Agent agent;
@@ -25,11 +27,10 @@ public abstract class Strategy {
 		matrix[logicalY][logicalX] = 1;
 	}
 
-	public abstract void findPath(float startX, float startY, float destX, float destY);
+	public abstract void findPath(CreatureEntity creature, float destX, float destY);
 
-	public abstract int getYDir(float x, float y);
+	public abstract int getYDir(CreatureEntity creature);
 
-	public abstract int getXDir(float x, float y);
-
+	public abstract int getXDir(CreatureEntity creature);
 
 }

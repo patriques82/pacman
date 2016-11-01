@@ -1,5 +1,6 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
 import com.game.pacman.world.tiles.Tile;
 
 public class BreadCrumbsStrategy extends Strategy {
@@ -13,15 +14,15 @@ public class BreadCrumbsStrategy extends Strategy {
 	}
 
 	@Override
-	public void findPath(float currentX, float currentY, float playerX, float playerY) {
-		int logicalX = (int) currentX/Tile.TILESIZE;
-		int logicalY = (int) currentY/Tile.TILESIZE;
+	public void findPath(CreatureEntity creature, float playerX, float playerY) {
+		int logicalX = (int) creature.getX()/Tile.TILESIZE;
+		int logicalY = (int) creature.getY()/Tile.TILESIZE;
 		updateMatrix(logicalX, logicalY, (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
 		maxDirection = getDirectionOfMaxCrumbs(logicalX, logicalY);
 	}
 
 	@Override
-	public int getYDir(float currentX, float currentY) {
+	public int getYDir(CreatureEntity creature) {
 		switch(maxDirection) {
 			case NORTH:
 				return -1;
@@ -41,7 +42,7 @@ public class BreadCrumbsStrategy extends Strategy {
 	}
 
 	@Override
-	public int getXDir(float currentX, float currentY) {
+	public int getXDir(CreatureEntity creature) {
 		switch(maxDirection) {
 			case NORTHEAST:
 				return 1;

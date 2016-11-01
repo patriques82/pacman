@@ -1,10 +1,10 @@
 package com.game.pacman.world.enteties.creatures.agent;
 
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
 import com.game.pacman.world.tiles.Tile;
 
 public class RandomStrategy extends Strategy {
 	
-	private float lastX, lastY;
 	private int lastXDir, lastYDir;
 
 	private boolean decisionTime;
@@ -15,8 +15,6 @@ public class RandomStrategy extends Strategy {
 
 	public RandomStrategy(final int[][] matrix) {
 		super(matrix);
-		lastXDir = 0;
-		lastYDir = 0;
 		
 		decisionTime = false;
 		lastTime = System.nanoTime();
@@ -25,12 +23,10 @@ public class RandomStrategy extends Strategy {
 	}
 
 	@Override
-	public void findPath(float currentX, float currentY, float playerX, float playerY) {
+	public void findPath(CreatureEntity creature, float playerX, float playerY) {
 		decisionTime = false;
-		lastX = currentX;
-		lastY = currentY;
-		int logicalX = (int) currentX/Tile.TILESIZE;
-		int logicalY = (int) currentY/Tile.TILESIZE;
+		int logicalX = (int) creature.getX()/Tile.TILESIZE;
+		int logicalY = (int) creature.getY()/Tile.TILESIZE;
 
 		long now = System.nanoTime();
 		long timeDiff = now - lastTime;
@@ -56,20 +52,21 @@ public class RandomStrategy extends Strategy {
 	}
 
 	@Override
-	public int getYDir(float currentX, float currentY) {
-		if(decisionTime && currentY == lastY) { // is stuck?
-			lastYDir = computeYDir((int) currentX/Tile.TILESIZE, (int) currentY/Tile.TILESIZE);
+	public int getYDir(CreatureEntity creature) {
+		if(decisionTime && creature.getLastX() == creature.getX()) {
+			lastYDir = computeYDir((int) creature.getX()/Tile.TILESIZE, (int) creature.getY()/Tile.TILESIZE);
 		}
 		return lastYDir;
 	}
 
 	@Override
-	public int getXDir(float currentX, float currentY) {
-		if(decisionTime && currentX == lastX) { // is stuck?
-			lastXDir = computeXDir((int) currentX/Tile.TILESIZE, (int) currentY/Tile.TILESIZE);
+	public int getXDir(CreatureEntity creature) {
+		if(decisionTime && creature.getLastY() == creature.getY()) {
+			lastXDir = computeXDir((int) creature.getX()/Tile.TILESIZE, (int) creature.getY()/Tile.TILESIZE);
 		}
 		return lastXDir;
 	}
+
 
 	int computeYDir(int logicalX, int logicalY) {
 		int up = (logicalY - 1 >= 0) ? matrix[logicalY-1][logicalX] : 0;

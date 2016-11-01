@@ -2,6 +2,7 @@ package com.game.pacman.world.enteties.creatures.agent;
 
 import java.util.List;
 
+import com.game.pacman.world.enteties.creatures.CreatureEntity;
 import com.game.pacman.world.enteties.creatures.agent.pathfinder.PathFinder;
 import com.game.pacman.world.tiles.Tile;
 
@@ -25,9 +26,9 @@ public class FollowingStrategy extends Strategy {
 	}
 
 	@Override
-	public void findPath(float currentX, float currentY, float playerX, float playerY) {
-		int logicalX = (int) currentX/Tile.TILESIZE;
-		int logicalY = (int) currentY/Tile.TILESIZE;
+	public void findPath(CreatureEntity creature, float playerX, float playerY) {
+		int logicalX = (int) creature.getX()/Tile.TILESIZE;
+		int logicalY = (int) creature.getY()/Tile.TILESIZE;
 		int logicalPlayerX = (int) playerX/Tile.TILESIZE;
 		int logicalPlayerY = (int) playerY/Tile.TILESIZE;
 
@@ -70,9 +71,9 @@ public class FollowingStrategy extends Strategy {
 	}
 
 	@Override
-	public int getXDir(float currentX, float currentY) {
-		int logicalX = (int) currentX/Tile.TILESIZE;
-		return (targetX > logicalX) ? 1 : ((targetX < currentX) ? -1 : 0);   
+	public int getXDir(CreatureEntity creature) {
+		int logicalX = (int) creature.getX()/Tile.TILESIZE;
+		return (targetX > logicalX) ? 1 : ((targetX < logicalX) ? -1 : 0);   
 	}
 
 	int getXCoord(int cell) {
@@ -80,8 +81,8 @@ public class FollowingStrategy extends Strategy {
 	}
 
 	@Override
-	public int getYDir(float currentX, float currentY) {
-		int logicalY = (int) currentY/Tile.TILESIZE;
+	public int getYDir(CreatureEntity creature) {
+		int logicalY = (int) creature.getY()/Tile.TILESIZE;
 		return (targetY > logicalY) ? 1 : ((targetY < logicalY) ? -1 : 0);   
 	}
 
