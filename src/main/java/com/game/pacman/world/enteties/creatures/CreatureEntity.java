@@ -50,8 +50,8 @@ public abstract class CreatureEntity extends Entity {
 	 * (Uses template pattern)
 	 */
 	public void move(World w) {
-		moveX(w);
 		moveY(w);
+		moveX(w);
 		if(collideWithCreature(w.getEntityManager().getCreatures())) {
 			enemyCollision((int) x, (int) y, (int) dx, (int) dy); // call implemented 
 		}
