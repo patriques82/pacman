@@ -15,10 +15,8 @@ public class BreadCrumbsStrategy extends Strategy {
 
 	@Override
 	public void findPath(CreatureEntity creature, float playerX, float playerY) {
-		int logicalX = (int) creature.getX()/Tile.TILESIZE;
-		int logicalY = (int) creature.getY()/Tile.TILESIZE;
-		updateMatrix(logicalX, logicalY, (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
-		maxDirection = getDirectionOfMaxCrumbs(logicalX, logicalY);
+		updateMatrix(creature.getLogicalX(), creature.getLogicalY(), (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
+		maxDirection = getDirectionOfMaxCrumbs(creature.getLogicalX(), creature.getLogicalY());
 	}
 
 	@Override

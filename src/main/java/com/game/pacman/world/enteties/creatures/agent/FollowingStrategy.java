@@ -27,8 +27,8 @@ public class FollowingStrategy extends Strategy {
 
 	@Override
 	public void findPath(CreatureEntity creature, float playerX, float playerY) {
-		int logicalX = (int) creature.getX()/Tile.TILESIZE;
-		int logicalY = (int) creature.getY()/Tile.TILESIZE;
+		int logicalX = creature.getLogicalX();
+		int logicalY = creature.getLogicalY();
 		int logicalPlayerX = (int) playerX/Tile.TILESIZE;
 		int logicalPlayerY = (int) playerY/Tile.TILESIZE;
 
@@ -72,7 +72,7 @@ public class FollowingStrategy extends Strategy {
 
 	@Override
 	public int getXDir(CreatureEntity creature) {
-		int logicalX = (int) creature.getX()/Tile.TILESIZE;
+		int logicalX = creature.getLogicalX();
 		return (targetX > logicalX) ? 1 : ((targetX < logicalX) ? -1 : 0);   
 	}
 
@@ -82,7 +82,7 @@ public class FollowingStrategy extends Strategy {
 
 	@Override
 	public int getYDir(CreatureEntity creature) {
-		int logicalY = (int) creature.getY()/Tile.TILESIZE;
+		int logicalY = creature.getLogicalY();
 		return (targetY > logicalY) ? 1 : ((targetY < logicalY) ? -1 : 0);   
 	}
 

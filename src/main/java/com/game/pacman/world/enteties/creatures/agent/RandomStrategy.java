@@ -15,7 +15,6 @@ public class RandomStrategy extends Strategy {
 
 	public RandomStrategy(final int[][] matrix) {
 		super(matrix);
-		
 		decisionTime = false;
 		lastTime = System.nanoTime();
 		timer = 0;
@@ -25,9 +24,6 @@ public class RandomStrategy extends Strategy {
 	@Override
 	public void findPath(CreatureEntity creature, float playerX, float playerY) {
 		decisionTime = false;
-		int logicalX = (int) creature.getX()/Tile.TILESIZE;
-		int logicalY = (int) creature.getY()/Tile.TILESIZE;
-
 		long now = System.nanoTime();
 		long timeDiff = now - lastTime;
 		lastTime = now;
@@ -36,9 +32,8 @@ public class RandomStrategy extends Strategy {
 			decisionTime = true;
 			timer = 0;
 		}
-
-		updateMatrix(logicalX, logicalY, (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
-		if(maxNeighbor(logicalX, logicalY) > 1)
+		updateMatrix(creature.getLogicalX(), creature.getLogicalY(), (int) playerX/Tile.TILESIZE, (int) playerY/Tile.TILESIZE);
+		if(maxNeighbor(creature.getLogicalX(), creature.getLogicalY()) > 1)
 			agent.setStrategy(new BreadCrumbsStrategy(matrix));
 	}
 
@@ -54,7 +49,7 @@ public class RandomStrategy extends Strategy {
 	@Override
 	public int getYDir(CreatureEntity creature) {
 		if(decisionTime && creature.getLastX() == creature.getX()) {
-			lastYDir = computeYDir((int) creature.getX()/Tile.TILESIZE, (int) creature.getY()/Tile.TILESIZE);
+			lastYDir = computeYDir(creature.getLogicalX(), creature.getLogicalY());
 		}
 		return lastYDir;
 	}
@@ -62,7 +57,7 @@ public class RandomStrategy extends Strategy {
 	@Override
 	public int getXDir(CreatureEntity creature) {
 		if(decisionTime && creature.getLastY() == creature.getY()) {
-			lastXDir = computeXDir((int) creature.getX()/Tile.TILESIZE, (int) creature.getY()/Tile.TILESIZE);
+			lastXDir = computeXDir(creature.getLogicalX(), creature.getLogicalY());
 		}
 		return lastXDir;
 	}
