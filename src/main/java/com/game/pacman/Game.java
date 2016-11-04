@@ -47,9 +47,9 @@ public class Game implements Runnable {
 		display.addKeyListener(keyMngr);
 		Assets.init();
 		gameState = new GameState();
-		gameState.setNextState(new GameOverState("Game Over", width/2, height/2));
+//		gameState.setNextState(new GameOverState("Game Over", width/2, height/2));
 //		menuState = new MenuState(handler);
-		StateManager.setState(gameState);
+//		StateManager.setState(gameState);
 	}
 
 	/**
@@ -81,7 +81,6 @@ public class Game implements Runnable {
 			}
 			// clear every second
 			if(timer >= 1000_000_000) {
-//				System.out.println("Ticks and Frames: " + ticks);
 				timer = 0;
 				// ticks = 0;
 			}
@@ -93,11 +92,8 @@ public class Game implements Runnable {
 	 * Updates the game
 	 */
 	private void tick() {
-		StateManager.tick();
+		gameState.tick();
 		KeyManager.tick();
-		// TODO
-		//if(StateManager.)
-		//	StateManager.setState(new GameOverState("Game Over", width/2, height/2));
 	}
 
 
@@ -116,7 +112,7 @@ public class Game implements Runnable {
 		g.clearRect(0, 0, width, height);
 
 		// Draw screen
-		StateManager.render(g);
+		gameState.render(g);
 
 		// Clean up
 		bs.show();

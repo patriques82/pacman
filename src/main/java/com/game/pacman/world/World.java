@@ -129,7 +129,7 @@ public class World extends Observable {
 			points[y][x] = false;
 			score++;
 			if(score == goal) {
-				// win
+				// TODO: win
 			}
 		}
 	}

@@ -27,9 +27,4 @@ public class GameOverState extends State {
 		g.drawString(message, centerX - textXOffset, centerY);
 	}
 
-	@Override
-	public boolean hasEnded() {
-		return false;
-	}
-
 }

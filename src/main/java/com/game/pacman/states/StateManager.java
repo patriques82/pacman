@@ -14,8 +14,8 @@ public class StateManager {
 	public static void tick() {
 		if(currentState != null) {
 			currentState.tick();
-			if(currentState.hasEnded())
-				currentState = currentState.getNextState();
+//			if(currentState.hasEnded())
+//				currentState = currentState.getNextState();
 		}
 	}
 
