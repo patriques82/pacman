@@ -15,16 +15,21 @@ import com.game.pacman.world.gfx.Assets;
 public class Player extends CreatureEntity {
 
 	private Animation animation;
+	private int goal;
+	private int score;
 	
-	public Player(int x, int y, World w) {
+	public Player(int x, int y, World w, int goal) {
 		super(x, y, 1, 1, w); // size: 1 * 1 tiles
 		animation = new Animation(500, Assets.playerRight); // open/close mouth every 500 ms
+		this.goal = goal;
+		this.score = 0;
 	}
 
 	@Override
 	public void tick() {
-		// remove point
-		world.removePoint(getLogicalX(), getLogicalY());
+		if(world.removePoint(getLogicalX(), getLogicalY())) {
+			score++;
+		}
 		super.tick();
 	}
 
@@ -67,6 +72,14 @@ public class Player extends CreatureEntity {
 	@Override
 	public void enemyCollision(int x, int y, int dx, int dy) {
 		health = 0;
+	}
+
+	public boolean hasWon() {
+		return score == goal;
+	}
+	
+	public boolean hasLost() {
+		return health == 0;
 	}
 
 }

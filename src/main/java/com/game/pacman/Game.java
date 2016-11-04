@@ -46,10 +46,14 @@ public class Game implements Runnable {
 		display = new Display(title, width, height);
 		display.addKeyListener(keyMngr);
 		Assets.init();
-		gameState = new GameState();
+		gameState = new GameState(this);
 //		gameState.setNextState(new GameOverState("Game Over", width/2, height/2));
 //		menuState = new MenuState(handler);
 //		StateManager.setState(gameState);
+	}
+	
+	public void setGameState(State gameState) {
+		this.gameState = gameState;
 	}
 
 	/**

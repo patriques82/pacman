@@ -29,8 +29,6 @@ public class World extends Observable {
 
 	private int[][] tiles; 
 	private boolean[][] points;
-	private int score;
-	private int goal;
 
 	private int width, height; // width and height of level in tiles
 
@@ -40,33 +38,16 @@ public class World extends Observable {
 	public static Tile POINT = new EmptyTile(2); // TODO: make point
 
 	public World(String path) {
-		score = 0;
 		addTile(EMPTY);
 		addTile(BLOCK);
 		addTile(POINT);
 		loadWorld(path);
-
-		entityMngr = new EntityManager(); 
-
-		// Player
-		Player player = new Player(startX, startY, this); // 23, 23
-		entityMngr.setPlayer(player);
-
-		// Monsters
-		MonsterFactory monsterFactory = new MonsterFactory(this, player);
-		Monster redMonster 	  = monsterFactory.getMonster(Monster.Type.RED, 1,1);      // upper left
-		Monster yellowMonster = monsterFactory.getMonster(Monster.Type.YELLOW, 21, 1); // upper right
-		Monster purpleMonster = monsterFactory.getMonster(Monster.Type.PURPLE, 1, 21); // lower left
-		Monster azureMonster  = monsterFactory.getMonster(Monster.Type.AZURE, 21, 21); // lower right
-		entityMngr.addCreature(redMonster);
-		entityMngr.addCreature(yellowMonster);
-		entityMngr.addCreature(purpleMonster);
-		entityMngr.addCreature(azureMonster);
 	}
 	
 	public void tick() {
 		entityMngr.tick();
-		if(entityMngr.getPlayer().getHealth() == 0) {
+		Player player = entityMngr.getPlayer();
+		if(player.hasWon() || player.hasLost()) {
 			this.notifyObserver();
 		}
 	}
@@ -124,14 +105,30 @@ public class World extends Observable {
 		}
 	}
 
-	public void removePoint(int x, int y) {
+	public boolean removePoint(int x, int y) {
 		if(isPoint(x, y)) {
 			points[y][x] = false;
-			score++;
-			if(score == goal) {
-				// TODO: win
+			return true;
+		}
+		return false;
+	}
+
+	public int[][] getInvertedTiles() {
+		int[][] invertedMatrix = new int[tiles.length][tiles[0].length];
+		for (int y = 0; y < tiles.length; y++) {
+			for (int x = 0; x < tiles[y].length; x++) {
+				invertedMatrix[y][x] = (tiles[y][x] ^ 1); // invert
 			}
 		}
+		return invertedMatrix;
+	}
+
+	public float getWidth() {
+		return tiles[0].length * Tile.TILESIZE;
+	}
+
+	public float getHeigth() {
+		return tiles.length * Tile.TILESIZE;
 	}
 	
 	public EntityManager getEntityManager() {
@@ -148,6 +145,7 @@ public class World extends Observable {
 
 		tiles = new int[width][height];
 		points = new boolean[width][height];
+		int goal = 0;
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -161,15 +159,26 @@ public class World extends Observable {
 					if(points[y][x]) { // is point?
 						goal++;  // goal is the amount of points pacman needs to win
 					}
-
 				}
-				// TODO:
-//				if(type == 3)
-//					createMonster at  x, y
-//					entityManager.addCreature(monster)
-//					erase 3 replace with 0
 			}
 		}
+
+		entityMngr = new EntityManager(); 
+
+		// Player
+		Player player = new Player(startX, startY, this, goal); // 23, 23
+		entityMngr.setPlayer(player);
+
+		// Monsters
+		MonsterFactory monsterFactory = new MonsterFactory(this, player);
+		Monster redMonster 	  = monsterFactory.getMonster(Monster.Type.RED, 1,1);      // upper left
+		Monster yellowMonster = monsterFactory.getMonster(Monster.Type.YELLOW, 21, 1); // upper right
+		Monster purpleMonster = monsterFactory.getMonster(Monster.Type.PURPLE, 1, 21); // lower left
+		Monster azureMonster  = monsterFactory.getMonster(Monster.Type.AZURE, 21, 21); // lower right
+		entityMngr.addCreature(redMonster);
+		entityMngr.addCreature(yellowMonster);
+		entityMngr.addCreature(purpleMonster);
+		entityMngr.addCreature(azureMonster);
 	}
 	
 	private static String readStringFromFile(String path) {
@@ -198,25 +207,5 @@ public class World extends Observable {
 			return 0;
 		}
 	}
-
-	public int[][] getInvertedTiles() {
-		int[][] invertedMatrix = new int[tiles.length][tiles[0].length];
-		for (int y = 0; y < tiles.length; y++) {
-			for (int x = 0; x < tiles[y].length; x++) {
-				invertedMatrix[y][x] = (tiles[y][x] ^ 1); // invert
-			}
-		}
-		return invertedMatrix;
-	}
-
-	public float getWidth() {
-		return tiles[0].length * Tile.TILESIZE;
-	}
-
-	public float getHeigth() {
-		return tiles.length * Tile.TILESIZE;
-	}
-
-
 
 }
