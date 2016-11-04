@@ -9,6 +9,7 @@ import com.game.pacman.world.enteties.EntityManager;
 import com.game.pacman.world.enteties.creatures.Player;
 import com.game.pacman.world.enteties.creatures.monster.Monster;
 import com.game.pacman.world.enteties.creatures.monster.MonsterFactory;
+import com.game.pacman.world.gfx.Assets;
 import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
@@ -27,6 +28,10 @@ public class World extends Observable {
 	private EntityManager entityMngr;
 
 	private int[][] tiles; 
+	private boolean[][] points;
+	private int score;
+	private int goal;
+
 	private int width, height; // width and height of level in tiles
 
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
@@ -35,6 +40,7 @@ public class World extends Observable {
 	public static Tile POINT = new EmptyTile(2); // TODO: make point
 
 	public World(String path) {
+		score = 0;
 		addTile(EMPTY);
 		addTile(BLOCK);
 		addTile(POINT);
@@ -74,12 +80,19 @@ public class World extends Observable {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				getTile(x, y).render(g, x*Tile.TILESIZE, y*Tile.TILESIZE);
+				if(isPoint(x, y)) {
+					g.drawImage(Assets.point, x*Tile.TILESIZE+12, y*Tile.TILESIZE+12, 9, 9, null);
+				}
 			}
 		}
 		// Render entities after world
 		entityMngr.render(g);
 	}
 	
+	private boolean isPoint(int x, int y) {
+		return points[y][x];
+	}
+
 	/**
 	 * Adds new type of tile to available tiles in the world
 	 * @param t Tile to add
@@ -110,6 +123,16 @@ public class World extends Observable {
 			return EMPTY;
 		}
 	}
+
+	public void removePoint(int x, int y) {
+		if(isPoint(x, y)) {
+			points[y][x] = false;
+			score++;
+			if(score == goal) {
+				// win
+			}
+		}
+	}
 	
 	public EntityManager getEntityManager() {
 		return this.entityMngr;
@@ -122,20 +145,29 @@ public class World extends Observable {
 		height = parseInt(tokens[1]);
 		startX = parseInt(tokens[2]);
 		startY = parseInt(tokens[3]);
+
 		tiles = new int[width][height];
+		points = new boolean[width][height];
+
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int type = parseInt(tokens[(x + (y * width)) + 4]);
-				tiles[y][x] = type;
+				if(type == 2) { // no point but empty
+					tiles[y][x] = 0;
+					points[y][x] = false;
+				} else {
+					tiles[y][x] = type;
+					points[y][x] = (type == 0); // 0 true, 1 false
+					if(points[y][x]) { // is point?
+						goal++;  // goal is the amount of points pacman needs to win
+					}
+
+				}
 				// TODO:
 //				if(type == 3)
 //					createMonster at  x, y
 //					entityManager.addCreature(monster)
 //					erase 3 replace with 0
-//				if(type == 1)
-//					createPoint at x y
-//					entityManager.addEntity(point)
-//					erase 2 replace with 0
 			}
 		}
 	}
@@ -184,5 +216,7 @@ public class World extends Observable {
 	public float getHeigth() {
 		return tiles.length * Tile.TILESIZE;
 	}
+
+
 
 }

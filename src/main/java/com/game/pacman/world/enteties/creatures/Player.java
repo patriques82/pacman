@@ -15,31 +15,32 @@ import com.game.pacman.world.gfx.Assets;
 public class Player extends CreatureEntity {
 
 	private Animation animation;
-	private World world;
 	
 	public Player(int x, int y, World w) {
-		super(x, y, 1, 1); // size: 1 * 1 tiles
-		world = w;
+		super(x, y, 1, 1, w); // size: 1 * 1 tiles
 		animation = new Animation(500, Assets.playerRight); // open/close mouth every 500 ms
 	}
 
-	/**
-	 * Get user input, update to right frames (direction) and move
-	 */
 	@Override
 	public void tick() {
-		getInput();
-		if(getDir() == Direction.DOWN)
+		// remove point
+		world.removePoint(getLogicalX(), getLogicalY());
+		super.tick();
+	}
+
+	@Override
+	public void setAnimation(Direction dir) {
+		if(dir == Direction.DOWN)
 			animation.setFrames(Assets.playerDown);
-		if(getDir() == Direction.UP)
+		if(dir == Direction.UP)
 			animation.setFrames(Assets.playerUp);
 		if(getDir() == Direction.RIGHT)
 			animation.setFrames(Assets.playerRight);
 		if(getDir() == Direction.LEFT)
 			animation.setFrames(Assets.playerLeft);
 		animation.tick();
-		move(world);
 	}
+
 
 	@Override
 	public void render(Graphics g) {
@@ -50,7 +51,7 @@ public class Player extends CreatureEntity {
 	/**
 	 * Reads in the input from user and stores the appropriate changes for next tick
 	 */
-	private void getInput() {
+	protected void getInput() {
 		setDx(0);
 		setDy(0);
 		if(KeyManager.pressUp())

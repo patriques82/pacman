@@ -17,31 +17,19 @@ public abstract class Monster extends CreatureEntity {
 	protected Animation animation;
 	protected Agent agent;
 
-	private World world;
 	private Player player;
 	
 	public Monster(int x, int y, World w, Player p) {
-		super(x, y, 1, 1); // size: 1 * 1 tiles
-		world = w;
+		super(x, y, 1, 1, w); // size: 1 * 1 tiles
 		player = p;
 		agent = new Agent(new RandomStrategy(w.getInvertedTiles()));
 	}
 	
-	public abstract void setAnimation(Direction dir);
-
-	@Override
-	public void tick() {
-		getInput();
-		setAnimation(getDir());
-		animation.tick();
-		move(world);
-	}
-
 // ************************************************************************************
 // ************************ Sets direction (AI) ***************************************
 // ************************************************************************************
 
-	private void getInput() {
+	protected void getInput() {
 		agent.computeDirection(this, player.getX(), player.getY());
 		if(agent.pressUp(this))
 			setDy(-speed);

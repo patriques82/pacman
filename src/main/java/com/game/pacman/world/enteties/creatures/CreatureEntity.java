@@ -22,12 +22,15 @@ public abstract class CreatureEntity extends Entity {
 	protected int health;
 	protected float speed;
 
-	public CreatureEntity(int x, int y, int width, int height) {
+	protected World world;
+
+	public CreatureEntity(int x, int y, int width, int height, World w) {
 		super(x, y, width, height);
 		health = DEFAULT_HEALH;
 		speed = DEFAULT_SPEED;
 		lastX = x;
 		lastY = y;
+		world = w;
 
 		// Override default settings of bounds to not cover whole body
 		float offset = Tile.TILESIZE * (1-BOUNDS_COVER);
@@ -36,6 +39,18 @@ public abstract class CreatureEntity extends Entity {
 		bounds.width = (int) (Tile.TILESIZE * BOUNDS_COVER);
 		bounds.height = (int) (Tile.TILESIZE * BOUNDS_COVER);
 	}
+
+	/**
+	 * Get user input, update to right frames (direction) and move
+	 */
+	@Override
+	public void tick() {
+		getInput();
+		setAnimation(getDir());
+		move(world);
+	}
+
+	abstract protected void getInput();
 	
 	/**
 	 * Stops the creature from moving
@@ -122,6 +137,8 @@ public abstract class CreatureEntity extends Entity {
 		}
 		return false;
 	}
+
+	public abstract void setAnimation(Direction dir);
 	
 	// What to do when colliding with enemy
 	public abstract void enemyCollision(int x, int y, int dx, int dy);

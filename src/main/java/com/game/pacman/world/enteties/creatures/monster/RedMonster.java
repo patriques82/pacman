@@ -10,10 +10,6 @@ public class RedMonster extends Monster {
 	public RedMonster(int x, int y, World w, Player p) {
 		super(x, y, w, p);
 		animation = new Animation(500, Assets.RedMonsterUp);
-//		int[][] invertedTiles = w.getInvertedTiles();
-//		agent = new Agent(new FollowingAsyncStrategy(
-//						invertedTiles,
-//						new AstarOpt(invertedTiles))); // overrides default RandomStrategy
 	}
 
 	@Override
@@ -26,6 +22,7 @@ public class RedMonster extends Monster {
 			animation.setFrames(Assets.RedMonsterRight);
 		if(dir == Direction.LEFT)
 			animation.setFrames(Assets.RedMonsterLeft);
+		animation.tick();
 	}
 
 }

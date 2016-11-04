@@ -22,6 +22,7 @@ public class PurpleMonster extends Monster {
 			animation.setFrames(Assets.PurpleMonsterRight);
 		if(dir == Direction.LEFT)
 			animation.setFrames(Assets.PurpleMonsterLeft);
+		animation.tick();
 	}
 
 }

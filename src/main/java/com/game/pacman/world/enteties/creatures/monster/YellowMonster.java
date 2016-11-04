@@ -22,6 +22,7 @@ public class YellowMonster extends Monster {
 			animation.setFrames(Assets.YellowMonsterRight);
 		if(dir == Direction.LEFT)
 			animation.setFrames(Assets.YellowMonsterLeft);
+		animation.tick();
 	}
 
 }

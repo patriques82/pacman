@@ -22,6 +22,7 @@ public class AzureMonster extends Monster {
 			animation.setFrames(Assets.AzureMonsterRight);
 		if(dir == Direction.LEFT)
 			animation.setFrames(Assets.AzureMonsterLeft);
+		animation.tick();
 	}
 
 }
