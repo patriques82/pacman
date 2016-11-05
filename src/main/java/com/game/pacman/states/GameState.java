@@ -34,9 +34,9 @@ public class GameState extends State implements Observer {
 		int centerX = (int) world.getWidth()/2;
 		int centerY = (int) world.getHeigth()/2;
 		if(world.getEntityManager().getPlayer().hasWon()) {
-			gameState = new GameOverState("Congratulations!", centerX, centerY);
+			gameState = new GameOverState(game, "Congratulations!", centerX, centerY);
 		} else {
-			gameState = new GameOverState("Game Over", centerX, centerY);
+			gameState = new GameOverState(game, "Game Over", centerX, centerY);
 		}
 		game.setGameState(gameState);
 	}
