@@ -26,10 +26,10 @@ public class Game implements Runnable {
 	private BufferStrategy bs;
 	private Graphics g;
 	
-	// States
-	private State gameState; // TODO:, menuState, settingsState;
+	// State
+	private State gameState;
 	
-	// Key manager
+	// Input managers
 	private KeyManager keyMngr;
 	
 	public Game(String title, int width, int height) {
@@ -46,10 +46,7 @@ public class Game implements Runnable {
 		display = new Display(title, width, height);
 		display.addKeyListener(keyMngr);
 		Assets.init();
-		gameState = new GameState(this);
-//		gameState.setNextState(new GameOverState("Game Over", width/2, height/2));
-//		menuState = new MenuState(handler);
-//		StateManager.setState(gameState);
+		gameState = new MenuState(this, keyMngr, width/2, height/2);
 	}
 	
 	public void setGameState(State gameState) {

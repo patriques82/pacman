@@ -3,7 +3,6 @@ package com.game.pacman.display;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
-
 import javax.swing.JFrame;
 
 /**

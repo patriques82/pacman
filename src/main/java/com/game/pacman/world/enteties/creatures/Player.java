@@ -73,7 +73,7 @@ public class Player extends CreatureEntity {
 	public void enemyCollision(int x, int y, int dx, int dy) {
 		health = 0;
 	}
-
+	
 	public boolean hasWon() {
 		return score == goal;
 	}

@@ -6,13 +6,14 @@ import java.awt.event.KeyListener;
 public class KeyManager implements KeyListener {
 	
 	private static boolean[] keys = new boolean[256];
-	private static boolean UP, DOWN, LEFT, RIGHT;
+	private static boolean UP, DOWN, LEFT, RIGHT, ENTER;
 	
 	public static void tick() {
 		UP = keys[KeyEvent.VK_UP];
 		DOWN = keys[KeyEvent.VK_DOWN];
 		LEFT = keys[KeyEvent.VK_LEFT];
 		RIGHT = keys[KeyEvent.VK_RIGHT];
+		ENTER = keys[KeyEvent.VK_ENTER];
 	}
 
 	@Override
@@ -44,6 +45,10 @@ public class KeyManager implements KeyListener {
 
 	public static boolean pressRight() {
 		return RIGHT;
+	}
+	
+	public static boolean pressEnter() {
+		return ENTER;
 	}
 
 }

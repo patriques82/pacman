@@ -28,14 +28,14 @@ public class World extends Observable {
 	private EntityManager entityMngr;
 
 	private int[][] tiles; 
-	private boolean[][] points;
+	private Points points;
 
 	private int width, height; // width and height of level in tiles
 
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
 	public static Tile EMPTY = new EmptyTile(0);
 	public static Tile BLOCK = new BlockTile(1);
-	public static Tile POINT = new EmptyTile(2); // TODO: make point
+	public static Tile POINT = new EmptyTile(2);
 
 	public World(String path) {
 		addTile(EMPTY);
@@ -61,7 +61,7 @@ public class World extends Observable {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				getTile(x, y).render(g, x*Tile.TILESIZE, y*Tile.TILESIZE);
-				if(isPoint(x, y)) {
+				if(points.isPoint(x, y)) {
 					g.drawImage(Assets.point, x*Tile.TILESIZE+12, y*Tile.TILESIZE+12, 9, 9, null);
 				}
 			}
@@ -70,10 +70,6 @@ public class World extends Observable {
 		entityMngr.render(g);
 	}
 	
-	private boolean isPoint(int x, int y) {
-		return points[y][x];
-	}
-
 	/**
 	 * Adds new type of tile to available tiles in the world
 	 * @param t Tile to add
@@ -106,8 +102,8 @@ public class World extends Observable {
 	}
 
 	public boolean removePoint(int x, int y) {
-		if(isPoint(x, y)) {
-			points[y][x] = false;
+		if(points.isPoint(x, y)) {
+			points.removePoint(x, y);
 			return true;
 		}
 		return false;
@@ -144,21 +140,16 @@ public class World extends Observable {
 		startY = parseInt(tokens[3]);
 
 		tiles = new int[width][height];
-		points = new boolean[width][height];
-		int goal = 0;
+		points = new Points(width, height);
 
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				int type = parseInt(tokens[(x + (y * width)) + 4]);
-				if(type == 2) { // no point but empty
-					tiles[y][x] = 0;
-					points[y][x] = false;
+				if(type == POINT.getId()) {
+					tiles[y][x] = 0; // make tile empty to enabling movement
+					points.addPoint(x, y);
 				} else {
 					tiles[y][x] = type;
-					points[y][x] = (type == 0); // 0 true, 1 false
-					if(points[y][x]) { // is point?
-						goal++;  // goal is the amount of points pacman needs to win
-					}
 				}
 			}
 		}
@@ -166,7 +157,7 @@ public class World extends Observable {
 		entityMngr = new EntityManager(); 
 
 		// Player
-		Player player = new Player(startX, startY, this, goal); // 23, 23
+		Player player = new Player(startX, startY, this, points.getGoal());
 		entityMngr.setPlayer(player);
 
 		// Monsters
