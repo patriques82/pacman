@@ -9,10 +9,10 @@ import com.game.pacman.world.enteties.EntityManager;
 import com.game.pacman.world.enteties.creatures.Player;
 import com.game.pacman.world.enteties.creatures.monster.Monster;
 import com.game.pacman.world.enteties.creatures.monster.MonsterFactory;
-import com.game.pacman.world.gfx.Assets;
 import com.game.pacman.world.observer.Observable;
 import com.game.pacman.world.tiles.BlockTile;
 import com.game.pacman.world.tiles.EmptyTile;
+import com.game.pacman.world.tiles.PointTile;
 import com.game.pacman.world.tiles.Tile;
 
 /**
@@ -35,7 +35,7 @@ public class World extends Observable {
 	public static Tile[] TILE_TYPES = new Tile[100]; // 100 different types
 	public static Tile EMPTY = new EmptyTile(0);
 	public static Tile BLOCK = new BlockTile(1);
-	public static Tile POINT = new EmptyTile(2);
+	public static Tile POINT = new PointTile(2);
 
 	public World(String path) {
 		addTile(EMPTY);
@@ -61,9 +61,6 @@ public class World extends Observable {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				getTile(x, y).render(g, x*Tile.TILESIZE, y*Tile.TILESIZE);
-				if(points.isPoint(x, y)) {
-					g.drawImage(Assets.point, x*Tile.TILESIZE+12, y*Tile.TILESIZE+12, 9, 9, null);
-				}
 			}
 		}
 		// Render entities after world
@@ -103,7 +100,8 @@ public class World extends Observable {
 
 	public boolean removePoint(int x, int y) {
 		if(points.isPoint(x, y)) {
-			points.removePoint(x, y);
+			points.removePoint(x, y); // remove logical point
+			tiles[y][x] = EMPTY.getId(); // remove graphical point
 			return true;
 		}
 		return false;
@@ -146,11 +144,9 @@ public class World extends Observable {
 			for (int x = 0; x < width; x++) {
 				int type = parseInt(tokens[(x + (y * width)) + 4]);
 				if(type == POINT.getId()) {
-					tiles[y][x] = 0; // make tile empty to enabling movement
 					points.addPoint(x, y);
-				} else {
-					tiles[y][x] = type;
 				}
+				tiles[y][x] = type;
 			}
 		}
 
