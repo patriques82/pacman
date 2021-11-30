@@ -32,12 +32,12 @@ public class Game implements Runnable {
 	// Input managers
 	private KeyManager keyMngr;
 	
-	/*public Game(String title, int width, int height) {
+	public Game(String title, int width, int height) {
 		this.title = title;
 		this.width = width;
 		this.height = height;
 		keyMngr = new KeyManager();
-	}*/
+	}
 
 	/**
 	 * Initializes assets and creates states
